@@ -64,6 +64,9 @@ def extraer_features(ruta_wav, ruta_json):
     
     # 1. Normalizar volumen para evitar la trampa de dB detectada en Fase 0
     y_c0 = normalizar_volumen(y_c0)
+
+    # 1. Aplicar filtro pasa banda
+    y_c0 = bandpass_filter(y_c0, sr)
     
     # 2. Recortar solo los segmentos donde el llamador habla
     tramos_voz = []
