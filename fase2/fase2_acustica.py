@@ -44,7 +44,6 @@ def _banco_filtros():
 
 BANCO = _banco_filtros()
 
-
 def lfcc(y):
     """LFCC por trama. Devuelve (coeficientes: matriz (20, tramas), energía de cada trama en dB)."""
     _, _, Z = stft(y, fs=SR, nperseg=VENTANA, noverlap=VENTANA - SALTO, boundary=None, padded=False)
@@ -69,44 +68,3 @@ def extraer_metricas_acusticas(voz_recortada, sr):
         metricas[f"lfcc_mediana_{i}"] = float(np.median(coef[i]))
         metricas[f"lfcc_std_{i}"] = float(np.std(coef[i]))
     return metricas
-
-
-def procesar_dataset(ruta_datos, n_llamadas=348, ruta_salida=None):
-    """Fase 1 (fase1/main.py de Aarón) -> Fase 2 para las primeras n_llamadas del manifest."""
-    import pandas as pd
-    from fase1 import main as f1
-
-    ruta_datos = Path(ruta_datos)
-    ruta_salida = Path(ruta_salida) if ruta_salida else ruta_datos / "features_lfcc.csv"
-    manifest = f1.leer_manifiesto(ruta_datos).head(n_llamadas)
-
-    filas, errores = [], []
-    for idx, fila in manifest.iterrows():
-        try:
-            y_c0_norm, sr = f1.procesar_audio_base(ruta_datos / "audio" / f"{fila['anon_id']}.wav")    # Fase 1
-            turnos_llamador, _ = f1.cargar_turnos(ruta_datos / "turns" / f"{fila['anon_id']}.json")    # Fase 1
-            voz_recortada = f1.recortar_voz_activa(y_c0_norm, turnos_llamador, sr)                     # Fase 1
-
-            fila_final = {"anon_id": fila["anon_id"], "label": fila["label"], "split": fila["split"]}
-            fila_final.update(extraer_metricas_acusticas(voz_recortada, sr))                           # Fase 2
-            filas.append(fila_final)
-        except Exception as e:
-            errores.append((fila["anon_id"], repr(e)))
-        if (idx + 1) % 50 == 0:
-            print(f"  {idx + 1}/{len(manifest)} llamadas")
-
-    tabla = pd.DataFrame(filas)
-    tabla.to_csv(ruta_salida, index=False)
-    print(f"Guardado: {ruta_salida} {tabla.shape} | llamadas con error: {len(errores)} {errores[:3]}")
-    return tabla
-
-
-if __name__ == "__main__":
-    import argparse
-
-    p = argparse.ArgumentParser(description="Fase 2 (versión de Fer) encadenada con la Fase 1: LFCC por llamada.")
-    p.add_argument("--datos", required=True, help="carpeta con manifest.csv, audio/ y turns/")
-    p.add_argument("--llamadas", type=int, default=348, help="primeras N llamadas del manifest (por defecto 348)")
-    p.add_argument("--salida", default=None, help="CSV de salida (por defecto <datos>/features_lfcc.csv)")
-    args = p.parse_args()
-    procesar_dataset(args.datos, args.llamadas, args.salida)

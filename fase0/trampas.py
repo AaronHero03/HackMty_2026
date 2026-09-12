@@ -6,10 +6,6 @@ las clases, el modelo podría aprender ese atajo y fallar con las llamadas de Al
 
 Solo usa numpy, scipy y matplotlib (vienen en Google Colab).
 
-Uso, desde la raíz del repo:
-    python fase0/trampas.py --datos ../hackmty26
-    En Colab:  !python fase0/trampas.py --datos /content/hackmty26
-
 Salidas:
     <datos>/fase0/por_llamada.csv y psd.npz   mediciones por llamada (NO se suben: llevan etiquetas)
     fase0/resultados/rasgos.csv               comparación humano vs IA por rasgo (promedios)
@@ -18,7 +14,6 @@ Salidas:
 Nota: los tramos de voz salen de turns/ del dataset. Aquí sirven para explorar; el modelo
 final no debe depender de ellos (ver Paso 4 de IMPLEMENTACION1.1.md).
 """
-import argparse
 import csv
 import json
 from pathlib import Path
@@ -317,14 +312,25 @@ def graficar(psd, es_ia, ruta):
 
 
 def main():
-    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--datos", required=True, type=Path, help="carpeta del dataset (manifest.csv, ../../Altur/audio/, ../../Altur/turns/)")
-    p.add_argument("--rehacer", action="store_true", help="volver a medir aunque exista el caché")
-    args = p.parse_args()
-    cache = args.datos / "fase0"
-    if args.rehacer or not (cache / "por_llamada.csv").exists():
+    # --- CONFIGURACIÓN SIMPLE ---
+    # Ajusta esta ruta a donde tengas tus datos
+    DATOS_DIR = Path("../hackmty26") 
+    
+    # Cambia a True si quieres forzar que se vuelva a medir todo ignorando el caché
+    REHACER = False 
+    # ----------------------------
+
+    if not DATOS_DIR.exists():
+        print(f"Error: No se encontró la carpeta '{DATOS_DIR}'.")
+        print("Ajusta la variable DATOS_DIR dentro de la función main() con tu ruta correcta.")
+        return
+
+    cache = DATOS_DIR / "fase0"
+    
+    if REHACER or not (cache / "por_llamada.csv").exists():
         print("Midiendo las llamadas...")
-        medir_todo(args.datos, cache)
+        medir_todo(DATOS_DIR, cache)
+        
     resumir(cache, Path(__file__).resolve().parent / "resultados")
 
 
