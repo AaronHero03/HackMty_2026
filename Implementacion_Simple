@@ -1,0 +1,43 @@
+## Fase 1: Pipeline de Datos y Estructura Base
+
+**Responsable ideal:** Estudiante de Computer Science 1 (Perfil de datos/backend).
+
+* **Lectura del Manifiesto:** Crear un script que cargue `manifest.csv` para mapear los identificadores de llamada (`anon_id`) con su clase y split (`train` o `val`).
+* **Separación de Canales:** Escribir una función que lea los `.wav` estéreo y extraiga el Canal 0 (el llamador) y el Canal 1 (el agente).
+* **Segmentación de Entrenamiento:** Implementar una función que lea los archivos `turns/*.json` y recorte el audio exactamente en los segmentos donde hay voz, guardando estas coordenadas para la extracción de características.
+
+## Fase 2: Ingeniería de Características Acústicas (DSP)
+
+**Responsable ideal:** Estudiante de Biomédica (Perfil de procesamiento de señales/biología).
+
+* **Extracción de LFCCs:** Extraer los Coeficientes Cepstrales de Frecuencia Lineal (LFCC) sobre los segmentos de voz del Canal 0.
+* **Descarte de Ruido Biomecánico:** Ignorar métricas como el *jitter* o *shimmer*. Por el teorema de muestreo de Nyquist-Shannon, una señal muestreada a 8 kHz no puede contener información por encima de 4 kHz, limitando severamente la resolución necesaria para medir micro-variaciones glóticas con precisión.
+
+
+* **Agregación:** Calcular la media y la varianza de los LFCCs a lo largo de los segmentos del Canal 0 para obtener un vector resumen por llamada.
+
+## Fase 3: Ingeniería de Características Conversacionales
+
+**Responsable ideal:** Estudiante de Computer Science 2 (Perfil algorítmico/lógico).
+
+* **Cálculo de Latencia:** Cruzar los tiempos del Canal 0 y Canal 1 (usando los JSON en entrenamiento) para medir el tiempo exacto entre que el agente termina de hablar y el llamador responde.
+* **Métricas de Varianza:** Calcular la desviación estándar de la latencia del llamador. Un bot tiene baja varianza; un humano, alta.
+* **Solapamientos y Backchannels:** Contar los segundos totales de habla simultánea y la frecuencia de respuestas cortas menores a un segundo (ej. "ajá", "ok") del Canal 0 mientras el Canal 1 está activo.
+
+## Fase 4: Entrenamiento del Modelo (Machine Learning)
+
+**Responsable ideal:** Estudiante de Computer Science 3 (Perfil ML/Estadística).
+
+* **Fusión de Datos:** Unir las salidas de la Fase 2 y Fase 3 en un único DataFrame (tabla) de Pandas, donde cada fila represente una llamada.
+* **Entrenamiento Tabular:** Configurar y entrenar un modelo Random Forest o XGBoost. Estos modelos ensamblados sobre características diseñadas superan a las redes neuronales profundas cuando el dataset es pequeño.
+
+
+* **Validación:** Entrenar estrictamente con el grupo `train` y evaluar el rendimiento (AUC, precisión) con el grupo `val`. Extraer la importancia de características (`feature_importances_`) para confirmar que la latencia y los LFCCs están guiando la decisión.
+
+## Fase 5: API y VAD de Producción
+
+**Responsable ideal:** CS 1 y CS 2 (Programación en pares).
+
+* **Detector de Actividad de Voz (VAD) Ligero:** Como en evaluación no tendrán los JSON, implementar un filtro algorítmico rápido (ej. `librosa.effects.split` basado en energía) que se ejecute sobre el audio entrante para estimar las marcas de tiempo al vuelo.
+* **Endpoint FastAPI:** Levantar un servidor con una ruta `POST /detect`.
+* **Ciclo de Inferencia:** El endpoint debe recibir el string en base64, decodificar el audio en memoria, aplicar el VAD algorítmico, calcular las métricas acústicas y conversacionales, pasarlas por el Random Forest (previamente guardado) y devolver exactamente: `{"is_synthetic": true, "confidence": 0.87}`.
