@@ -5,7 +5,8 @@ estricto (descarte de C0, filtro de tramas por energía y precálculo de matriz)
 """
 import numpy as np
 import scipy.signal as signal
-from scipy.fft import dct, stft
+from scipy.signal import stft
+from scipy.fft import dct
 
 SR = 8000
 N_FILTROS = 20
