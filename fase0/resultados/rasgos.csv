@@ -18,7 +18,7 @@ Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_ceros_pct,% de muestras ex
 Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_silencio_inclinacion_db,inclinación del ruido en silencios (dB),16.429,16.807,0.609,0.609,moderada
 Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_voz_graves_pct,% energía bajo 300 Hz,21.156,21.961,0.635,0.617,moderada
 Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_voz_agudos_pct,% energía sobre 3400 Hz,0.004,0.004,0.549,0.645,no separa
-Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_voz_centroide_hz,centro de gravedad del espectro (Hz),606.072,603.478,0.433,0.424,no separa
+Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_voz_centroide_hz,centro de gravedad del espectro (Hz),606.073,603.478,0.433,0.424,no separa
 Parte 3b — Fuga: TIEMPOS del agente (canal 1),agente_pct,% de la llamada en que habla el agente,54.349,46.193,0.155,0.093,FUERTE
 Parte 3b — Fuga: TIEMPOS del agente (canal 1),agente_turnos_min,turnos del agente por minuto,8.556,7.431,0.339,0.262,moderada
 Parte 3b — Fuga: TIEMPOS del agente (canal 1),agente_turno_mediana_s,duración típica de un turno del agente (s),3.205,2.85,0.378,0.375,moderada

@@ -318,7 +318,7 @@ def graficar(psd, es_ia, ruta):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--datos", required=True, type=Path, help="carpeta del dataset (manifest.csv, audio/, turns/)")
+    p.add_argument("--datos", required=True, type=Path, help="carpeta del dataset (manifest.csv, ../../Altur/audio/, ../../Altur/turns/)")
     p.add_argument("--rehacer", action="store_true", help="volver a medir aunque exista el caché")
     args = p.parse_args()
     cache = args.datos / "fase0"
