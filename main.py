@@ -2,13 +2,13 @@ import pandas as pd
 from pathlib import Path
 
 # Importamos los contratos de cada miembro del equipo
-import Tigres_Del_Sur.fase1.main as f1
-import Tigres_Del_Sur.fase2.fase2_acustica as f2
-import fase3_conversacional as f3
+import fase1.main as f1
+import fase2.fase2_acustica as f2
+import fase3.fase3_conversacional as f3
 
 def main():
     # Ajusta esta ruta si es necesario
-    ruta_base = Path("/Users/carlo/Downloads/HackMty2026/Altur")
+    ruta_base = Path("/home/andys27/Developer/GitHub/HackMty_2026/Altur_Data")
     
     # 1. Fase 1 arranca leyendo el mapa
     manifest = f1.leer_manifiesto(ruta_base)
@@ -32,7 +32,10 @@ def main():
             metricas_acusticas = f2.extraer_metricas_acusticas(voz_filtrada, sr)
             
             # --- Fase 3: Lógica conversacional ---
-            metricas_tiempo = f3.extraer_metricas_tiempo(id_llamada, ruta_base)
+            metricas_tiempo = f3.extraer_metricas_tiempo(
+                tramos_agente=turnos_agente,
+                tramos_llamante=turnos_llamador
+            )
             
             # --- Fusión ---
             fila_final = {
