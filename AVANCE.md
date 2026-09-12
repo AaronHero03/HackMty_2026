@@ -59,6 +59,17 @@ Las fases siguen `Implementacion_Simple.md`. Los detalles técnicos y el porqué
   3. Corregir la razón para dejar jitter y shimmer para después.
   4. Agregar la **Fase 0** de trampas.
 - [ ] Definir quién hace la Fase 1 y la Fase 4.
+- [ ] Decidir qué herramientas de patrocinadores usamos (propuesta abajo). Solo si encajan con el reto; ninguna va antes del núcleo, salvo Vultr.
+
+### Herramientas de patrocinadores (propuesta)
+
+| Herramienta | Propuesta | Para qué | Cuándo |
+|---|---|---|---|
+| **Vultr** | ✅ Usar | Servidor donde vive `POST /detect` (ya es el servidor del Paso 13). Sin GPU: los modelos no la necesitan | Desde el inicio (Fase 5) |
+| **ElevenLabs** | 🟡 Usar como prueba | Grabar unas llamadas donde quien llama es un agente de ElevenLabs y ver si lo detectamos ("voz nunca vista"). **No para entrenar**: el modelo aprendería "audio hecho por nosotros = IA". Solo voces del equipo, con consentimiento, pasadas a 8 kHz | Después de la Fase 4 |
+| **MongoDB Atlas** | 🟡 Si sobra tiempo | Guardar la huella de las voces **sintéticas** detectadas y avisar si una llamada nueva usa la misma voz de IA. Nunca voces de personas | Al final |
+| **Gemini** | ⏸️ Esperar a Altur | Capa semántica: escuchar qué responde quien llama cuando el agente pregunta por algo que no existe. Requiere enviar el audio a Google (pregunta para mentores) y no puede ser necesario para que `/detect` responda | Solo si Altur lo permite |
+| Snowflake, Solana, Tiger Data | ❌ No usar | No mejoran la detección: los datos caben en un CSV y el audio se procesa en memoria | — |
 
 ---
 
