@@ -21,6 +21,7 @@ from pathlib import Path
 import numpy as np
 from scipy.fft import dct
 from scipy.signal import stft
+import scipy.signal as signal
 
 SR = 8000
 N_FILTROS = 20          # filtros triangulares del mismo ancho entre 300 y 3400 Hz
@@ -43,6 +44,14 @@ def _banco_filtros():
 
 
 BANCO = _banco_filtros()
+
+
+def aplicar_filtro_pasabanda(y, sr=SR, fmin=300, fmax=3400, orden=4):
+    """Filtro IIR Butterworth usando Secciones de Segundo Orden (SOS)."""
+    if len(y) == 0:
+        return y
+    sos = signal.butter(N=orden, Wn=[fmin, fmax], btype='bandpass', fs=sr, output='sos')
+    return signal.sosfilt(sos, y)
 
 def lfcc(y):
     """LFCC por trama. Devuelve (coeficientes: matriz (20, tramas), energía de cada trama en dB)."""
