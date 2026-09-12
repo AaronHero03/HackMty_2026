@@ -4,7 +4,7 @@ Este script ejecuta la capa de extracción acústica (Fase 2) sobre todo el data
 Importa la lógica de audio base de src.audio y los algoritmos matemáticos de src.dsp.
 
 Uso, desde la raíz del repo:
-    python fase2/main.py --datos ../hackmty26
+    python -m fase2.main --datos Altur
 """
 import argparse
 import json
