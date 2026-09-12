@@ -9,12 +9,6 @@ Contrato con main.py:
   (Fase 1: procesar_audio_base -> cargar_turnos -> recortar_voz_activa).
 - Devuelve 24 métricas: mediana y desviación de los LFCC 1 a 12.
 
-Uso por sí sola (encadenada con la Fase 1 de Aarón, fase1/main.py):
-    python fase2_acustica.py --datos ../hackmty26
-    En Colab: !python /content/HackMty_2026/fase2_acustica.py --datos /content/hackmty26
-Genera <datos>/features_lfcc.csv con las primeras 348 llamadas (las últimas 5 son la prueba de la Fase 3).
-
-Solo usa numpy y scipy (y pandas en el uso por sí sola, igual que la Fase 1).
 """
 from pathlib import Path
 

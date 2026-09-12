@@ -2,8 +2,8 @@ import pandas as pd
 from pathlib import Path
 
 # Importamos los contratos de cada miembro del equipo
-import fase1_base as f1
-import fase2_acustica as f2
+import Tigres_Del_Sur.fase1.main as f1
+import Tigres_Del_Sur.fase2.fase2_acustica as f2
 import fase3_conversacional as f3
 
 def main():
@@ -28,7 +28,8 @@ def main():
             voz_recortada = f1.recortar_voz_activa(y_c0_norm, turnos_llamador, sr)
             
             # --- Fase 2: DSP (Biomédica) ---
-            metricas_acusticas = f2.extraer_metricas_acusticas(voz_recortada, sr)
+            voz_filtrada = f2.aplicar_filtro_pasabanda(voz_recortada)
+            metricas_acusticas = f2.extraer_metricas_acusticas(voz_filtrada, sr)
             
             # --- Fase 3: Lógica conversacional ---
             metricas_tiempo = f3.extraer_metricas_tiempo(turnos_llamador, turnos_agente)
