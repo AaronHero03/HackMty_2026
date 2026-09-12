@@ -12,8 +12,6 @@
 
 * **Extracción de LFCCs:** Extraer los Coeficientes Cepstrales de Frecuencia Lineal (LFCC) sobre los segmentos de voz del Canal 0.
 * **Descarte de Ruido Biomecánico:** Ignorar métricas como el *jitter* o *shimmer*. Por el teorema de muestreo de Nyquist-Shannon, una señal muestreada a 8 kHz no puede contener información por encima de 4 kHz, limitando severamente la resolución necesaria para medir micro-variaciones glóticas con precisión.
-
-
 * **Agregación:** Calcular la media y la varianza de los LFCCs a lo largo de los segmentos del Canal 0 para obtener un vector resumen por llamada.
 
 ## Fase 3: Ingeniería de Características Conversacionales
@@ -30,8 +28,6 @@
 
 * **Fusión de Datos:** Unir las salidas de la Fase 2 y Fase 3 en un único DataFrame (tabla) de Pandas, donde cada fila represente una llamada.
 * **Entrenamiento Tabular:** Configurar y entrenar un modelo Random Forest o XGBoost. Estos modelos ensamblados sobre características diseñadas superan a las redes neuronales profundas cuando el dataset es pequeño.
-
-
 * **Validación:** Entrenar estrictamente con el grupo `train` y evaluar el rendimiento (AUC, precisión) con el grupo `val`. Extraer la importancia de características (`feature_importances_`) para confirmar que la latencia y los LFCCs están guiando la decisión.
 
 ## Fase 5: API y VAD de Producción
