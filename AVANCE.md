@@ -31,7 +31,7 @@ Las fases siguen `Implementacion_Simple.md`. Los detalles técnicos y el porqué
 | Fase | Pregunta que responde | Quién | Estado | Resultado en una frase |
 |---|---|---|---|---|
 | 0. Trampas en los datos | ¿Los datos son confiables, o hay algo que delata la clase sin tener que ver con ser IA? | Fernando | ✅ | 2 trampas: la IA suena 7 dB más fuerte y 2 de cada 3 IAs tienen silencio digital (sin ruido de fondo). 2 dudas para Altur. La latencia de quien llama se ve legítima. Detalle y reglas por fase: `fase0/README.md` |
-| 1. Leer llamadas | ¿Separamos los canales y encontramos dónde hay voz? | Por definir | ⬜ | |
+| 1. Leer llamadas | ¿Separamos los canales y encontramos dónde hay voz? | Fernando | ✅ | `src/audio.py` y `src/vad.py` listos para todos. Error contra `turns/` de 2–9 %. La latencia de quien llama medida con nuestro detector separa mejor que con `turns/` (AUC 0.88 en val). Encontramos eco del agente en llamadas humanas. Detalle: `fase1/README.md` |
 | 2. Voz | ¿Cómo suena quien llama? (LFCC) | Carlos / Andrés (por confirmar) | ⬜ | |
 | 3. Conversación | ¿Cómo responde quien llama? (latencias, encimadas) | Fernando | ⬜ | |
 | 4. Modelo | ¿Cuántas llamadas acierta y qué tan confiable es su confianza? | Por definir | ⬜ | |
@@ -61,6 +61,7 @@ Las fases siguen `Implementacion_Simple.md`. Los detalles técnicos y el porqué
 - [ ] Definir quién hace la Fase 1 y la Fase 4.
 - [ ] Decidir qué herramientas de patrocinadores usamos (propuesta abajo). Solo si encajan con el reto; ninguna va antes del núcleo, salvo Vultr.
 - [ ] Leer las **reglas por fase** de `fase0/README.md` antes de programar las Fases 1 a 5 (normalizar volumen, nada de rasgos del silencio, latencia mediana).
+- [ ] Fases 2, 3 y 5: leer y preparar el audio con `src/audio.py` y encontrar la voz con `src/vad.py`, **no** con `turns/` (instalación y ejemplo en `fase1/README.md`). Ojo con el eco del agente en llamadas humanas.
 - [ ] Preguntar a Altur (salen de la Fase 0):
   1. ¿Las llamadas de IA se inyectaron como audio digital sin ruido de fondo? ¿Las de evaluación también?
   2. ¿Las llamadas humanas y las de IA usaron la misma versión y el mismo guion del agente?
@@ -97,3 +98,4 @@ Sigue: pasarle la tabla a quien hace el modelo
 | 2026-09-12 | Fernando | Primera lectura de los `turns/`: quien llama tarda en contestar 0.9 s si es humano y 2.2 s si es IA (medianas). Con esa sola regla se aciertan 63 de 71 llamadas de `val` |
 | 2026-09-12 | Fernando | Audio descargado del Release oficial y verificado. No se sube al repo (`audio/` está en `.gitignore`) |
 | 2026-09-12 | Fernando | Fase 0 lista (`fase0/trampas.py`, ~25 s). Trampas: volumen (AUC 0.93 en val) y silencio digital ("silencio plano = IA" acierta 56/71 en val). Sospechosos: más graves en la voz de IA y el agente habla menos con IAs. Limpio: el sonido del agente. Legítima: la latencia de quien llama (AUC 0.85 en val) |
+| 2026-09-12 | Fernando | Fase 1 lista: carga de llamadas, normalización y detector Silero (umbral 0.7, silencio mínimo 200 ms, elegidos con train). Error contra `turns/` de 2–9 %. Con nuestro detector la latencia de quien llama separa mejor (AUC 0.88 en val). Hallazgo: eco del agente en el canal 0 de las llamadas humanas, que `turns/` contaba como voz |

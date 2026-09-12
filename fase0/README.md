@@ -132,7 +132,7 @@ No depende del volumen, del ruido ni del sonido del agente. Es el núcleo del pr
 |---|---|
 | 1. Leer llamadas | Normalizar el volumen con ganancia constante por canal. Revisar que el detector de voz se equivoque parecido en ambas clases: el silencio limpio de la IA lo vuelve más fácil |
 | 2. Voz | LFCC (y CPP si entra) solo en tramas con voz. Quitar el primer coeficiente LFCC o normalizar antes, porque es casi el volumen. Nada de rasgos del silencio o del ruido |
-| 3. Conversación | Usar la latencia **mediana**. Medir interrupciones por tiempos, no por energía. Sin rasgos que miren solo al agente hasta que Altur responda |
+| 3. Conversación | Usar la latencia **mediana**. Medir interrupciones por tiempos, no por energía. Sin rasgos que miren solo al agente hasta que Altur responda. **Agregado en la Fase 1:** las llamadas humanas traen eco del agente en el canal 0; latencias y encimadas solo con los tramos del detector, nunca con energía del canal 0 mientras habla el agente (ver `fase1/README.md`) |
 | 4. Modelo | Agregar rasgos uno a la vez y quedarse con los que suben el marcador en `val`. Validar agrupando por voz |
 | 5. API | La misma normalización y el mismo detector de voz que en el entrenamiento |
 

@@ -1,0 +1,13 @@
+# Dependencias del proyecto. Sin versiones exactas: pip elige la que tiene instalador para tu
+# Python y tu sistema (Colab, Windows, Ubuntu, Arch). Cada fase agrega aquí lo que use.
+#   pip install -r requirements.txt        (en Colab: !pip install -r requirements.txt)
+#
+# Solo en Linux sin GPU (p. ej. el servidor): instalar antes torch en su versión CPU, que pesa
+# mucho menos que la de PyPI con CUDA:
+#   pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+numpy
+scipy
+soundfile
+matplotlib
+silero-vad>=5.1          # load_silero_vad() y audio_forward(); instala torch y torchaudio
