@@ -22,10 +22,10 @@ def extraer_metricas_tiempo(audio_id, ruta_base):
     if not latencias:
         return {
             "latenciaMedia": None,
-            "variaza": None,
+            "varianza": None,
         }
 
     return {
         "latenciaMedia": float(np.mean(latencias)),
-        "variaza": float(np.var(latencias)),
+        "varianza": float(np.var(latencias)),
     }
