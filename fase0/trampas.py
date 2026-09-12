@@ -314,7 +314,7 @@ def graficar(psd, es_ia, ruta):
 def main():
     # --- CONFIGURACIÓN SIMPLE ---
     # Ajusta esta ruta a donde tengas tus datos
-    DATOS_DIR = Path("../hackmty26") 
+    DATOS_DIR = Path("/home/aaronhero/Workspace/HackMty2026/Tigres_Del_Sur/Altur_Data" ) 
     
     # Cambia a True si quieres forzar que se vuelva a medir todo ignorando el caché
     REHACER = False 

@@ -27,5 +27,5 @@ def detectar_canales(ruta_carpeta):
                     print(f"Error al leer {nombre_archivo}. Asegúrate de que el formato sea válido.")
 
 # Reemplaza esto con la ruta donde tienes guardados tus archivos JSON
-ruta_de_tus_jsons = "/home/aaronhero/Workspace/HackMty2026/Altur/turns" 
+ruta_de_tus_jsons = "/home/aaronhero/Workspace/HackMty2026/Tigres_Del_Sur/Altur_Data/turns" 
 detectar_canales(ruta_de_tus_jsons)
