@@ -12,20 +12,10 @@ import librosa
 import soundfile as sf
 import json
 from pathlib import Path
-from scipy.signal import butter, lfilter
 import warnings
 
 # Suprimir advertencias de librosa por audios cortos
 warnings.filterwarnings("ignore")
-
-def bandpass_filter(y, sr, lowcut=300, highcut=3400):
-    """Aplica un filtro pasa banda para mantener solo frecuencias entre lowcut y highcut."""
-    
-    nyquist = 0.5 * sr
-    low = lowcut / nyquist
-    high = highcut / nyquist
-    b, a = butter(4, [low, high], btype='band')
-    return lfilter(b, a, y)
 
 def normalizar_volumen(y, target_db=-20):
     """Ajusta el volumen del audio a un nivel RMS constante."""
@@ -64,9 +54,6 @@ def extraer_features(ruta_wav, ruta_json):
     
     # 1. Normalizar volumen para evitar la trampa de dB detectada en Fase 0
     y_c0 = normalizar_volumen(y_c0)
-
-    # 1. Aplicar filtro pasa banda
-    y_c0 = bandpass_filter(y_c0, sr)
     
     # 2. Recortar solo los segmentos donde el llamador habla
     tramos_voz = []
