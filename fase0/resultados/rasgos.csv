@@ -1,0 +1,29 @@
+parte,rasgo,descripcion,mediana_humano,mediana_ia,auc_train,auc_val,veredicto
+"Parte 1 — Volumen y ruido (canal 0, quien llama)",c0_voz_db,volumen de la voz (dBFS),-23.305,-16.016,0.799,0.928,FUERTE
+"Parte 1 — Volumen y ruido (canal 0, quien llama)",c0_silencio_db,ruido de fondo en silencios (dBFS),-72.244,-72.244,0.503,0.553,no separa
+"Parte 1 — Volumen y ruido (canal 0, quien llama)",c0_snr_db,voz menos ruido (dB),48.448,53.335,0.609,0.679,moderada
+"Parte 1 — Volumen y ruido (canal 0, quien llama)",c0_ceros_pct,% de muestras exactamente 0 en silencios,0.344,0.219,0.353,0.356,moderada
+"Parte 1 — Volumen y ruido (canal 0, quien llama)",c0_saturado_pct,% de muestras saturadas en la voz,0.0,0.002,0.666,0.771,moderada
+"Parte 1 — Volumen y ruido (canal 0, quien llama)",c0_dc,desplazamiento DC (muestras),3.402,3.176,0.449,0.32,no separa
+"Parte 1 — Volumen y ruido (canal 0, quien llama)",c0_eco_db,sube el canal 0 cuando solo habla el agente (dB),0.0,0.0,0.611,0.504,no separa
+"Parte 1 — Volumen y ruido (canal 0, quien llama)",c0_silencio_inclinacion_db,inclinación del ruido en silencios (dB; ~0 = digital),7.085,0.66,0.373,0.365,moderada
+"Parte 2 — Espectro (canal 0, quien llama)",c0_voz_graves_pct,% energía de la voz bajo 300 Hz,19.251,36.115,0.796,0.801,FUERTE
+"Parte 2 — Espectro (canal 0, quien llama)",c0_voz_agudos_pct,% energía de la voz sobre 3400 Hz,0.07,0.011,0.062,0.126,FUERTE
+"Parte 2 — Espectro (canal 0, quien llama)",c0_voz_centroide_hz,centro de gravedad del espectro de la voz (Hz),586.89,516.07,0.336,0.363,moderada
+"Parte 2 — Espectro (canal 0, quien llama)",c0_silencio_graves_pct,% energía del silencio bajo 300 Hz,20.166,8.253,0.355,0.36,moderada
+"Parte 2 — Espectro (canal 0, quien llama)",c0_silencio_agudos_pct,% energía del silencio sobre 3400 Hz,3.785,13.751,0.611,0.638,moderada
+Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_voz_db,volumen de la voz del agente (dBFS),-22.193,-22.301,0.46,0.397,no separa
+Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_silencio_db,ruido de fondo del agente (dBFS),-59.049,-59.159,0.473,0.345,no separa
+Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_ceros_pct,% de muestras exactamente 0 en silencios,5.232,5.118,0.407,0.533,no separa
+Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_silencio_inclinacion_db,inclinación del ruido en silencios (dB),16.429,16.807,0.609,0.609,moderada
+Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_voz_graves_pct,% energía bajo 300 Hz,21.156,21.961,0.635,0.617,moderada
+Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_voz_agudos_pct,% energía sobre 3400 Hz,0.004,0.004,0.549,0.645,no separa
+Parte 3a — Fuga: cómo SUENA el agente (canal 1),c1_voz_centroide_hz,centro de gravedad del espectro (Hz),606.072,603.478,0.433,0.424,no separa
+Parte 3b — Fuga: TIEMPOS del agente (canal 1),agente_pct,% de la llamada en que habla el agente,54.349,46.193,0.155,0.093,FUERTE
+Parte 3b — Fuga: TIEMPOS del agente (canal 1),agente_turnos_min,turnos del agente por minuto,8.556,7.431,0.339,0.262,moderada
+Parte 3b — Fuga: TIEMPOS del agente (canal 1),agente_turno_mediana_s,duración típica de un turno del agente (s),3.205,2.85,0.378,0.375,moderada
+Parte 3b — Fuga: TIEMPOS del agente (canal 1),agente_latencia_mediana_s,tarda el agente en contestar (s),1.32,1.48,0.736,0.628,moderada
+Parte 3b — Fuga: TIEMPOS del agente (canal 1),agente_interrupciones_min,veces por minuto que el agente empieza a hablar encima,0.529,0.41,0.379,0.433,no separa
+Referencia — señales que esperamos que SÍ separen,llamante_latencia_mediana_s,tarda quien llama en contestar (s),0.9,2.16,0.86,0.854,FUERTE
+Referencia — señales que esperamos que SÍ separen,silencio_pct,% de la llamada en que nadie habla,13.12,19.65,0.865,0.84,FUERTE
+Referencia — señales que esperamos que SÍ separen,duracion_s,duración de la llamada (s),147.12,144.4,0.469,0.483,no separa

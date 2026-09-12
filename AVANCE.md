@@ -30,7 +30,7 @@ Las fases siguen `Implementacion_Simple.md`. Los detalles técnicos y el porqué
 
 | Fase | Pregunta que responde | Quién | Estado | Resultado en una frase |
 |---|---|---|---|---|
-| 0. Trampas en los datos | ¿Los datos son confiables, o hay algo que delata la clase sin tener que ver con ser IA? | Fernando | 🟡 | Audio descargado y revisado: 353 WAV, 2 canales, 8 kHz, 16 bits. Falta buscar trampas |
+| 0. Trampas en los datos | ¿Los datos son confiables, o hay algo que delata la clase sin tener que ver con ser IA? | Fernando | ✅ | 2 trampas: la IA suena 7 dB más fuerte y 2 de cada 3 IAs tienen silencio digital (sin ruido de fondo). 2 dudas para Altur. La latencia de quien llama se ve legítima. Detalle y reglas por fase: `fase0/README.md` |
 | 1. Leer llamadas | ¿Separamos los canales y encontramos dónde hay voz? | Por definir | ⬜ | |
 | 2. Voz | ¿Cómo suena quien llama? (LFCC) | Carlos / Andrés (por confirmar) | ⬜ | |
 | 3. Conversación | ¿Cómo responde quien llama? (latencias, encimadas) | Fernando | ⬜ | |
@@ -60,6 +60,10 @@ Las fases siguen `Implementacion_Simple.md`. Los detalles técnicos y el porqué
   4. Agregar la **Fase 0** de trampas.
 - [ ] Definir quién hace la Fase 1 y la Fase 4.
 - [ ] Decidir qué herramientas de patrocinadores usamos (propuesta abajo). Solo si encajan con el reto; ninguna va antes del núcleo, salvo Vultr.
+- [ ] Leer las **reglas por fase** de `fase0/README.md` antes de programar las Fases 1 a 5 (normalizar volumen, nada de rasgos del silencio, latencia mediana).
+- [ ] Preguntar a Altur (salen de la Fase 0):
+  1. ¿Las llamadas de IA se inyectaron como audio digital sin ruido de fondo? ¿Las de evaluación también?
+  2. ¿Las llamadas humanas y las de IA usaron la misma versión y el mismo guion del agente?
 
 ### Herramientas de patrocinadores (propuesta)
 
@@ -92,3 +96,4 @@ Sigue: pasarle la tabla a quien hace el modelo
 |---|---|---|
 | 2026-09-12 | Fernando | Primera lectura de los `turns/`: quien llama tarda en contestar 0.9 s si es humano y 2.2 s si es IA (medianas). Con esa sola regla se aciertan 63 de 71 llamadas de `val` |
 | 2026-09-12 | Fernando | Audio descargado del Release oficial y verificado. No se sube al repo (`audio/` está en `.gitignore`) |
+| 2026-09-12 | Fernando | Fase 0 lista (`fase0/trampas.py`, ~25 s). Trampas: volumen (AUC 0.93 en val) y silencio digital ("silencio plano = IA" acierta 56/71 en val). Sospechosos: más graves en la voz de IA y el agente habla menos con IAs. Limpio: el sonido del agente. Legítima: la latencia de quien llama (AUC 0.85 en val) |
