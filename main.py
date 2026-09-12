@@ -8,7 +8,7 @@ import fase3_conversacional as f3
 
 def main():
     # Ajusta esta ruta si es necesario
-    ruta_base = Path("/home/aaronhero/Workspace/HackMty2026/Altur")
+    ruta_base = Path("/Users/carlo/Downloads/HackMty2026/Altur")
     
     # 1. Fase 1 arranca leyendo el mapa
     manifest = f1.leer_manifiesto(ruta_base)
@@ -32,7 +32,7 @@ def main():
             metricas_acusticas = f2.extraer_metricas_acusticas(voz_filtrada, sr)
             
             # --- Fase 3: Lógica conversacional ---
-            metricas_tiempo = f3.extraer_metricas_tiempo(turnos_llamador, turnos_agente)
+            metricas_tiempo = f3.extraer_metricas_tiempo(id_llamada, ruta_base)
             
             # --- Fusión ---
             fila_final = {
