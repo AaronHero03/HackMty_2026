@@ -32,7 +32,10 @@ def main():
             metricas_acusticas = f2.extraer_metricas_acusticas(voz_filtrada, sr)
             
             # --- Fase 3: Lógica conversacional ---
-            metricas_tiempo = f3.extraer_metricas_tiempo(id_llamada, ruta_base)
+            metricas_tiempo = f3.extraer_metricas_tiempo(
+                tramos_agente=turnos_agente,
+                tramos_llamante=turnos_llamador
+            )
             
             # --- Fusión ---
             fila_final = {
