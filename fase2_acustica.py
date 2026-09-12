@@ -1,4 +1,6 @@
-"""Fase 2 — Métricas acústicas de la voz de quien llama (LFCC).
+"""Fase 2 — Métricas acústicas de la voz de quien llama (LFCC). Versión de Fer.
+
+Hay otra versión de la Fase 2 en src/dsp.py (Andrés); el equipo elige cuál usa main.py.
 
 Contrato con main.py:
     metricas_acusticas = f2.extraer_metricas_acusticas(voz_recortada, sr)
