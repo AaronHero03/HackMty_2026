@@ -29,11 +29,11 @@ DIR_MUESTRAS_DEF = RAIZ_PROYECTO / "Altur_Data" / "audio_augmented"
 RUTA_MANIFEST_DEF = RAIZ_PROYECTO / "Altur_Data" / "manifest.csv"
 
 
-# DEFINICIÓN DE MODELOS REPRESENTATIVOS (Ajusta los nombres de archivo)
-MODELOS_REPRESENTATIVOS = {
-    "RF": "modelo_rf_altur.joblib",
-    "CatBoost": "modelo_catboost_altur.cbm",
-    "XGBoostv4": "modelo_xgboost_altur_v4.json"
+# Modelos y pesos asignados basados en su desempeño individual previo
+MODELOS_Y_PESOS = {
+    "CatBoost": {"archivo": "modelo_catboost_altur.cbm", "peso": 0.70},
+    "RandomForest": {"archivo": "modelo_rf_altur.joblib", "peso": 0.15},
+    "XGBoost": {"archivo": "modelo_xgboost_altur_v4.json", "peso": 0.15},
 }
 
 
@@ -51,30 +51,40 @@ def cargar_manifest_ground_truth(ruta_manifest: Path) -> dict:
     return ground_truth
 
 
-def cargar_modelos_clave(diccionario_modelos: dict) -> dict:
+def cargar_modelos_ponderados(diccionario_config: dict) -> tuple:
     cargados = {}
-    for alias, nombre_archivo in diccionario_modelos.items():
-        ruta = DIR_MODELOS / nombre_archivo
+    pesos_activos = {}
+    
+    for alias, config in diccionario_config.items():
+        ruta = DIR_MODELOS / config["archivo"]
         if not ruta.exists():
-            print(f"⚠️ Modelo clave omitido (no existe): {ruta.resolve()}")
+            print(f"⚠️ Modelo omitido (no existe): {ruta.resolve()}")
             continue
 
         ext = ruta.suffix.lower()
         try:
             if ext in [".pkl", ".joblib"]:
                 cargados[alias] = joblib.load(ruta)
+                pesos_activos[alias] = config["peso"]
             elif ext == ".json" and xgb is not None:
                 m = xgb.XGBClassifier()
                 m.load_model(str(ruta))
                 cargados[alias] = m
+                pesos_activos[alias] = config["peso"]
             elif ext == ".cbm" and CatBoostClassifier is not None:
                 m = CatBoostClassifier()
                 m.load_model(str(ruta))
                 cargados[alias] = m
+                pesos_activos[alias] = config["peso"]
         except Exception as e:
-            print(f"⚠️ Error cargando {alias} desde {nombre_archivo}: {e}")
+            print(f"⚠️ Error cargando {alias} desde {config['archivo']}: {e}")
 
-    return cargados
+    # Re-normalizar pesos si algún modelo no se pudo cargar
+    if pesos_activos:
+        suma_pesos = sum(pesos_activos.values())
+        pesos_activos = {k: v / suma_pesos for k, v in pesos_activos.items()}
+
+    return cargados, pesos_activos
 
 
 def extraer_probabilidad(modelo, df_features: pd.DataFrame) -> float:
@@ -94,31 +104,31 @@ def extraer_probabilidad(modelo, df_features: pd.DataFrame) -> float:
         return 1.0 if pred == 1 else 0.0
 
 
-def evaluar_ensambles_representativos(
+def evaluar_ensamble_ponderado(
     directorio_muestras: Path = DIR_MUESTRAS_DEF,
     ruta_manifest: Path = RUTA_MANIFEST_DEF,
     umbral_ia: float = 0.40,
 ):
-    modelos = cargar_modelos_clave(MODELOS_REPRESENTATIVOS)
+    modelos, pesos = cargar_modelos_ponderados(MODELOS_Y_PESOS)
     labels_reales = cargar_manifest_ground_truth(Path(ruta_manifest))
 
     if not modelos:
-        print("❌ No se pudo cargar ninguno de los modelos representativos.")
-        print(f"Asegúrate de que existen en la carpeta: {DIR_MODELOS.resolve()}")
+        print("❌ No se pudo cargar ninguno de los modelos configurados.")
         return
 
-    print(f"🌟 Ensamble configurado con ({len(modelos)} modelos): {', '.join(modelos.keys())}")
-    archivos_wav = list(Path(directorio_muestras).glob("*.wav"))
+    print(f"🌟 Ensamble Ponderado Configurado:")
+    for alias, p in pesos.items():
+        print(f"   ├── {alias:<15}: Peso = {p:.2f}")
 
+    archivos_wav = list(Path(directorio_muestras).glob("*.wav"))
     if not archivos_wav:
         print(f"⚠️ No hay archivos .wav en {Path(directorio_muestras).resolve()}")
         return
 
-    print(f"\n🚀 Evaluando Hard & Soft Ensembles sobre {len(archivos_wav)} muestras...\n" + "=" * 75)
+    print(f"\n🚀 Evaluando Soft Voting Ponderado sobre {len(archivos_wav)} muestras...\n" + "=" * 75)
 
     y_true = []
-    y_pred_soft = []
-    y_pred_hard = []
+    y_pred_weighted = []
 
     for ruta_audio in archivos_wav:
         anon_id = (
@@ -150,27 +160,21 @@ def evaluar_ensambles_representativos(
             for alias, mod in modelos.items():
                 probs[alias] = extraer_probabilidad(mod, df_inferencia)
 
-            # Soft Voting (Promedio continuo)
-            prob_promedio = float(np.mean(list(probs.values())))
-            veredicto_soft = "synthetic" if prob_promedio >= umbral_ia else "human"
-
-            # Hard Voting (Conteo por mayoría binaria)
-            votos_ia = sum(1 for p in probs.values() if p >= umbral_ia)
-            veredicto_hard = "synthetic" if votos_ia > (len(probs) / 2) else "human"
+            # Soft Voting Ponderado (Suma ponderada de probabilidades)
+            prob_ponderada = sum(probs[alias] * pesos[alias] for alias in modelos.keys())
+            veredicto_weighted = "synthetic" if prob_ponderada >= umbral_ia else "human"
 
             label_real = labels_reales.get(anon_id, None)
 
             print(f"🎙️ Audio: {ruta_audio.name}")
             for alias, p in probs.items():
-                print(f"   ├── {alias:<15}: Prob IA = {p:.4f}")
+                print(f"   ├── {alias:<15}: Prob IA = {p:.4f} (Peso: {pesos[alias]:.2f})")
 
-            print(f"   📊 SOFT ENSEMBLE : {veredicto_soft.upper()} (Prob Promedio: {prob_promedio:.4f})")
-            print(f"   🗳️ HARD ENSEMBLE : {veredicto_hard.upper()} ({votos_ia}/{len(probs)} votos IA)")
+            print(f"   ⚖️ SOFT PONDERADO: {veredicto_weighted.upper()} (Prob Final: {prob_ponderada:.4f})")
 
             if label_real:
                 y_true.append(label_real)
-                y_pred_soft.append(veredicto_soft)
-                y_pred_hard.append(veredicto_hard)
+                y_pred_weighted.append(veredicto_weighted)
                 print(f"   🎯 REAL (GT)     : {label_real.upper()}\n" + "-" * 75)
             else:
                 print("   ⚠️ REAL (GT)     : NO REGISTRADO EN MANIFEST\n" + "-" * 75)
@@ -180,19 +184,12 @@ def evaluar_ensambles_representativos(
 
     if y_true:
         print("\n" + "=" * 75)
-        print("📊 REPORTE FINAL - SOFT VOTING ENSEMBLE (VS MANIFEST)")
+        print("📊 REPORTE FINAL - SOFT VOTING PONDERADO (VS MANIFEST)")
         print("=" * 75)
-        print(classification_report(y_true, y_pred_soft, target_names=["human", "synthetic"]))
-        print("Matriz de Confusión (Soft):")
-        print(confusion_matrix(y_true, y_pred_soft, labels=["human", "synthetic"]))
-
-        print("\n" + "=" * 75)
-        print("📊 REPORTE FINAL - HARD VOTING ENSEMBLE (VS MANIFEST)")
-        print("=" * 75)
-        print(classification_report(y_true, y_pred_hard, target_names=["human", "synthetic"]))
-        print("Matriz de Confusión (Hard):")
-        print(confusion_matrix(y_true, y_pred_hard, labels=["human", "synthetic"]))
+        print(classification_report(y_true, y_pred_weighted, target_names=["human", "synthetic"]))
+        print("Matriz de Confusión (Ponderado):")
+        print(confusion_matrix(y_true, y_pred_weighted, labels=["human", "synthetic"]))
 
 
 if __name__ == "__main__":
-    evaluar_ensambles_representativos()
+    evaluar_ensamble_ponderado()

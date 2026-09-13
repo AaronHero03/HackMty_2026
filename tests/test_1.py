@@ -26,7 +26,7 @@ from src.tools.vad import fusionar_turnos, generar_turnos_vad
 # Definición de rutas base del proyecto
 RAIZ_PROYECTO = Path(__file__).resolve().parent.parent
 DIR_MODELOS = RAIZ_PROYECTO / "models"
-DIR_MUESTRAS_DEF = RAIZ_PROYECTO / "Altur_Data" / "Original_Dataset" / "audio"
+DIR_MUESTRAS_DEF = RAIZ_PROYECTO / "Altur_Data" / "audio_augmented"
 RUTA_MANIFEST_DEF = RAIZ_PROYECTO / "Altur_Data" / "manifest.csv"
 
 
@@ -176,10 +176,10 @@ def probar_audios_locales(
         except Exception as e:
             print(f"⚠️ Error procesando {ruta_audio.name}: {e}\n")
 
-    # 4. Reporte de Métricas Finales
+# 4. Reporte de Métricas Finales
     if y_true:
         print("=" * 70)
-        print("📊 REPORTE DE EVALUACIÓN GENERAL (VS MANIFEST)")
+        print(f"📊 REPORTE DE EVALUACIÓN GENERAL | Modelo: {ruta_final.name} (VS MANIFEST)")
         print("=" * 70)
         print(classification_report(y_true, y_pred, target_names=["human", "synthetic"]))
         print("Matriz de Confusión:")
@@ -188,7 +188,7 @@ def probar_audios_locales(
 
 if __name__ == "__main__":
     probar_audios_locales(
-        directorio_muestras=RAIZ_PROYECTO / "tests" / "Dataset" / "Original_Dataset",
-        nombre_modelo="modelo_svm_altur.joblib",
+        directorio_muestras=RAIZ_PROYECTO / "Altur_Data" / "audio_augmented",
+        nombre_modelo="modelo_catboost_altur.cbm",
         ruta_manifest=RUTA_MANIFEST_DEF,
     )
