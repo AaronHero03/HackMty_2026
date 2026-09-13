@@ -50,6 +50,35 @@ They provide us a dataset of 300 calls. Half human-human and the other half agen
 
 We have to expose a /detect endpoint that return:
 {
-  "is_syntethic": true
+  "is_synthetic": true
   "confidence": 0.87
 }
+
+## API (`POST /detect`)
+
+`api.py` expone el endpoint que llama el juez de Altur, con el mismo proceso de `tests/test_1.py` y el modelo `modelo_xgboost_altur_v4.json`.
+
+**Contrato:** recibe `{"call_id", "audio_base64", "sample_rate": 8000, "channels": 2}` y responde `{"is_synthetic": bool, "confidence": 0-1}`. `confidence` es la seguridad en la respuesta dada: el juez calcula la probabilidad de IA como `confidence` si `is_synthetic` es true, y como `1 - confidence` si es false.
+
+**Variables de entorno** (en Railway, en Variables):
+
+| Variable | Para qué | Si no está |
+|---|---|---|
+| `MONGO_URI` | Guardar cada resultado en MongoDB Atlas, después de responder | No guarda historial; la API responde igual |
+| `UMBRAL` | Probabilidad de IA a partir de la cual responde sintético | 0.40 |
+| `CORS_ORIGINS` | Páginas que pueden llamar a la API desde el navegador, separadas por comas | `https://fernandox89.github.io` |
+
+**Correrla en tu computadora** (Windows, Ubuntu o Arch), con lo de `requirements.txt` ya instalado:
+
+```bash
+pip install fastapi uvicorn
+uvicorn api:app --port 8000
+```
+
+**Desplegar en Railway**, desde la raíz del repo, con la CLI de Railway, la sesión iniciada y el servicio elegido una vez con `railway link`:
+
+```bash
+railway up
+```
+
+El `Dockerfile` instala `requirements-api.txt` (solo lo que usa el servidor, sin torch) y copia únicamente la API, el modelo y los módulos que usa. `.railwayignore` evita subir audios y datos de Altur.

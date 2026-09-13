@@ -1,0 +1,9 @@
+# `railway up` solo sube lo que necesita la API (ver Dockerfile).
+# Los datos de Altur (audios, manifest, turnos, features) no se redistribuyen.
+/*
+!/Dockerfile
+!/api.py
+!/requirements-api.txt
+!/modelo_xgboost_altur_v4.json
+!/src/
+/src/**/resultados/
