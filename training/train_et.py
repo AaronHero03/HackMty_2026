@@ -2,13 +2,13 @@ from pathlib import Path
 import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from training.utils import cargar_datos, evaluar_y_reportar
 
 
-def entrenar_rf():
+def entrenar_et():
     datos = cargar_datos()
 
     root = Path(__file__).resolve().parent.parent
@@ -19,8 +19,8 @@ def entrenar_rf():
         [
             ("imputer", SimpleImputer(strategy="median")),
             (
-                "rf",
-                RandomForestClassifier(
+                "et",
+                ExtraTreesClassifier(
                     n_estimators=200,
                     max_depth=6,
                     random_state=42,
@@ -30,25 +30,25 @@ def entrenar_rf():
         ]
     )
 
-    print("🚀 Entrenando Random Forest...")
+    print("🚀 Entrenando Extra Trees...")
     pipeline.fit(datos["X_train"], datos["y_train"])
 
     y_pred = pipeline.predict(datos["X_val"])
     dir_out = evaluar_y_reportar(
-        "RandomForest", datos["y_val"], y_pred, datos["val_df"]
+        "ExtraTrees", datos["y_val"], y_pred, datos["val_df"]
     )
 
     # Gráfica de Importancia
-    modelo_rf = pipeline.named_steps["rf"]
+    modelo_et = pipeline.named_steps["et"]
     importancias = pd.Series(
-        modelo_rf.feature_importances_, index=datos["X_train"].columns
+        modelo_et.feature_importances_, index=datos["X_train"].columns
     )
     top15 = importancias.nlargest(15).sort_values(ascending=True)
 
     ruta_grafica = dir_out / "importancia.png"
     plt.figure(figsize=(10, 8))
-    top15.plot(kind="barh", color="#2e7d32")
-    plt.title("Random Forest - Top 15 Métricas por Importancia")
+    top15.plot(kind="barh", color="#00695c")
+    plt.title("Extra Trees - Top 15 Métricas por Importancia")
     plt.xlabel("Feature Importance Score")
     plt.tight_layout()
     plt.savefig(ruta_grafica, dpi=150)
@@ -56,10 +56,10 @@ def entrenar_rf():
     print(f"📉 Gráfica de importancia guardada en: {ruta_grafica}")
 
     # Guardar Pipeline
-    ruta_modelo = dir_models / "modelo_rf_altur.joblib"
+    ruta_modelo = dir_models / "modelo_et_altur.joblib"
     joblib.dump(pipeline, ruta_modelo)
     print(f"💾 Modelo guardado en: {ruta_modelo}")
 
 
 if __name__ == "__main__":
-    entrenar_rf()
+    entrenar_et()

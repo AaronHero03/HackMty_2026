@@ -1,94 +1,154 @@
 from pathlib import Path
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
-from scipy.stats import beta
-from sklearn.metrics import accuracy_score, classification_report
+import seaborn as sns
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
 
 
-def obtener_ruta_features() -> Path:
-    """Busca la matriz de características preferida (VAD o estándar)."""
-    raiz = Path(__file__).resolve().parent.parent
-    ruta_vad = raiz / "Altur_Data" / "features_final_vad.csv"
-    ruta_std = raiz / "Altur_Data" / "features_final.csv"
-
-    if ruta_vad.exists():
-        return ruta_vad
-    elif ruta_std.exists():
-        return ruta_std
-    else:
-        raise FileNotFoundError(
-            "No se encontró features_final_vad.csv ni features_final.csv en Altur_Data/"
-        )
-
-
-def cargar_datos(ruta_csv=None):
-    """Carga y prepara los splits de datos sin contaminar el conjunto de validación."""
-    if ruta_csv is None:
-        ruta_csv = obtener_ruta_features()
-
+def cargar_datos():
+    root = Path(__file__).resolve().parent.parent
+    ruta_csv = root / "Altur_Data" / "features_final_vad.csv"
     print(f"📊 Cargando datos desde: {ruta_csv}")
+
     df = pd.read_csv(ruta_csv)
 
-    df["target"] = df["label"].apply(lambda x: 1 if x == "synthetic" else 0)
+    val_df = df[df["split"] == "val"].copy()
+    train_df = df[df["split"] == "train"].copy()
 
-    train_df = df[df["split"] == "train"]
-    val_df = df[df["split"] == "val"]
+    X_train = train_df.drop(
+        columns=["anon_id", "label", "split"], errors="ignore"
+    )
+    y_train = train_df["label"].map({"human": 0, "synthetic": 1})
 
-    columnas_ignorar = ["anon_id", "label", "split", "target"]
-    X_train = train_df.drop(columns=columnas_ignorar)
-    y_train = train_df["target"]
-    X_val = val_df.drop(columns=columnas_ignorar)
-    y_val = val_df["target"]
+    X_val = val_df.drop(columns=["anon_id", "label", "split"], errors="ignore")
+    y_val = val_df["label"].map({"human": 0, "synthetic": 1})
 
-    # Split de Early Stopping
     X_tr, X_es, y_tr, y_es = train_test_split(
-        X_train, y_train, test_size=0.15, stratify=y_train, random_state=42
+        X_train, y_train, random_state=42, test_size=0.15, stratify=y_train
     )
 
     return {
         "X_train": X_train,
         "y_train": y_train,
+        "X_val": X_val,
+        "y_val": y_val,
         "X_tr": X_tr,
         "y_tr": y_tr,
         "X_es": X_es,
         "y_es": y_es,
-        "X_val": X_val,
-        "y_val": y_val,
         "val_df": val_df,
     }
 
 
 def calcular_intervalo_confianza(y_true, y_pred):
-    """Calcula el Intervalo de Confianza del 95% mediante distribución Beta (Clopper-Pearson)."""
+    from scipy.stats import beta
+
+    aciertos = (np.array(y_true) == np.array(y_pred)).sum()
     n = len(y_true)
-    aciertos = int((y_pred == y_true).sum())
-    lo = beta.ppf(0.025, aciertos, n - aciertos + 1) * 100
-    hi = beta.ppf(0.975, aciertos + 1, n - aciertos) * 100
-    acc = accuracy_score(y_true, y_pred) * 100
-    return acc, lo, hi, n
+    acc = (aciertos / n) * 100
+    alpha = 0.05
+    lower = beta.ppf(alpha / 2, aciertos, n - aciertos + 1) * 100
+    upper = beta.ppf(1 - alpha / 2, aciertos + 1, n - aciertos) * 100
+    return acc, lower, upper, n
 
 
-def evaluar_y_reportar(nombre_modelo, y_val, y_pred, val_df):
-    """Imprime métricas finales y detecta fallos de clasificación."""
-    acc, lo, hi, n = calcular_intervalo_confianza(y_val, y_pred)
+def obtener_dir_modelo_docs(nombre_modelo):
+    root = Path(__file__).resolve().parent.parent
+    tag = nombre_modelo.lower().replace(" ", "_")
+    dir_modelo = root / "docs" / tag
+    dir_modelo.mkdir(parents=True, exist_ok=True)
+    return dir_modelo
+
+
+def graficar_matriz_confusion(y_true, y_pred, nombre_modelo, dir_out):
+    cm = confusion_matrix(y_true, y_pred)
+    fig, ax = plt.subplots(figsize=(6, 5))
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        cbar=False,
+        xticklabels=["Humano (0)", "IA (1)"],
+        yticklabels=["Humano (0)", "IA (1)"],
+        ax=ax,
+        annot_kws={"size": 14, "weight": "bold"},
+    )
+    ax.set_title(
+        f"Matriz de Confusión - {nombre_modelo}", fontsize=12, pad=10
+    )
+    ax.set_xlabel("Predicción del Modelo")
+    ax.set_ylabel("Clase Real")
+    plt.tight_layout()
+
+    ruta_salida = dir_out / "matriz_confusion.png"
+    plt.savefig(ruta_salida, dpi=150)
+    plt.close()
+    print(f"🖼️ Matriz de confusión guardada en: {ruta_salida}")
+
+
+def graficar_metricas_clase(y_true, y_pred, nombre_modelo, dir_out):
+    report = classification_report(
+        y_true,
+        y_pred,
+        target_names=["Humano (0)", "IA (1)"],
+        output_dict=True,
+    )
+    df_metrics = pd.DataFrame(report).iloc[:-1, :2].T
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+    df_metrics.plot(
+        kind="bar",
+        ax=ax,
+        colormap="viridis",
+        edgecolor="black",
+        linewidth=0.8,
+    )
+
+    ax.set_title(
+        f"Métricas por Clase - {nombre_modelo}", fontsize=12, pad=10
+    )
+    ax.set_ylabel("Puntuación (Score)")
+    ax.set_ylim(0, 1.15)
+    ax.set_xticklabels(["Humano (0)", "IA (1)"], rotation=0)
+    ax.grid(axis="y", linestyle="--", alpha=0.5)
+    ax.legend(loc="lower right")
+
+    for p in ax.patches:
+        h = p.get_height()
+        if h > 0:
+            ax.annotate(
+                f"{h:.2f}",
+                (p.get_x() + p.get_width() / 2.0, h),
+                ha="center",
+                va="bottom",
+                xytext=(0, 3),
+                textcoords="offset points",
+                fontsize=9,
+            )
+
+    plt.tight_layout()
+    ruta_salida = dir_out / "metricas_clase.png"
+    plt.savefig(ruta_salida, dpi=150)
+    plt.close()
+    print(f"📊 Gráfica de métricas guardada en: {ruta_salida}")
+
+
+def evaluar_y_reportar(nombre_modelo, y_true, y_pred, val_df):
+    acc, lo, hi, n = calcular_intervalo_confianza(y_true, y_pred)
+    dir_out = obtener_dir_modelo_docs(nombre_modelo)
+
     print(f"\n--- RESULTADOS {nombre_modelo.upper()} EN VALIDACIÓN ---")
     print(f"Precisión: {acc:.2f}% (IC 95%: {lo:.1f}%–{hi:.1f}%, n={n})\n")
     print(
         classification_report(
-            y_val, y_pred, target_names=["Humano (0)", "IA (1)"]
+            y_true, y_pred, target_names=["Humano (0)", "IA (1)"]
         )
     )
 
-    val_df_copy = val_df.copy()
-    val_df_copy["prediccion"] = y_pred
-    errores = val_df_copy[val_df_copy["target"] != val_df_copy["prediccion"]]
+    graficar_matriz_confusion(y_true, y_pred, nombre_modelo, dir_out)
+    graficar_metricas_clase(y_true, y_pred, nombre_modelo, dir_out)
 
-    if not errores.empty:
-        print(f"Llamadas que engañaron a {nombre_modelo}:")
-        print(errores[["anon_id", "label", "prediccion"]])
-    else:
-        print(
-            f"{nombre_modelo} clasificó correctamente el 100% de las muestras."
-        )
-
-    return acc
+    return dir_out
