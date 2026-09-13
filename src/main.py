@@ -14,8 +14,6 @@ def main():
     manifest = f1.leer_manifiesto(ruta_base)
     datos_procesados = []
     
-    vad.generar_turnos(str(ruta_base / "audio"))
-    
     print("Iniciando orquestación del dataset...")
     
     for idx, fila in manifest.iterrows():
