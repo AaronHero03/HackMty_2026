@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from pathlib import Path
 
@@ -9,8 +10,9 @@ import src.tools.vad as vad
 
 def main():
     # Ajusta esta ruta si es necesario
-    ruta_base = Path("~/Workspace/HackMty2026/Tigres_Del_Sur/Altur_Data").expanduser()
-    
+    root = Path(__file__).resolve().parent.parent
+    ruta_base = root / "Altur_Data"    
+
     # 1. Fase 1 arranca leyendo el mapa
     manifest = f1.leer_manifiesto(ruta_base)
     datos_procesados = []
@@ -62,6 +64,6 @@ def main():
     ruta_salida = ruta_base / "features_final.csv"
     df_final.to_csv(ruta_salida, index=False)
     print(f"\n¡Matriz ensamblada y lista en {ruta_salida}!")
-
+    
 if __name__ == "__main__":
     main()
