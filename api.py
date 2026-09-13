@@ -10,13 +10,12 @@ from pymongo import MongoClient
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 
-# Evitar el ModuleNotFoundError de 'src'
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, ROOT_DIR)
 
-from src.fase1.main import procesar_audio_base, recortar_voz_activa
-from src.fase2.fase2_acustica import aplicar_filtro_pasabanda, extraer_metricas_acusticas
-from src.fase3.fase3_conversacional import extraer_metricas_tiempo
+from src.fase1.audio_base import procesar_audio_base, recortar_voz_activa
+from src.fase2.acustica import aplicar_filtro_pasabanda, extraer_metricas_acusticas
+from src.fase3.conversacional import extraer_metricas_tiempo
 from src.tools.vad import generar_turnos_vad, fusionar_turnos
 
 # Configuración MongoDB Atlas
@@ -32,7 +31,7 @@ ml_models = {}
 async def lifespan(app: FastAPI):
     print("⏳ Cargando modelo XGBoost...")
     modelo = xgb.XGBClassifier()
-    modelo.load_model("modelo_xgboost_altur_v3.json") #carga el modelo desde el archivo
+    modelo.load_model(os.path.join(ROOT_DIR, "models", "modelo_xgboost_altur_v4.json"))
     ml_models["xgboost"] = modelo
     print("✅ Modelo cargado y listo.")
     yield
