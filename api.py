@@ -32,7 +32,7 @@ ml_models = {}
 async def lifespan(app: FastAPI):
     print("⏳ Cargando modelo XGBoost...")
     modelo = xgb.XGBClassifier()
-    modelo.load_model("modelo_xgboost_altur_v4.json")
+    modelo.load_model("modelo_xgboost_altur_v3.json") #carga el modelo desde el archivo
     ml_models["xgboost"] = modelo
     print("✅ Modelo cargado y listo.")
     yield
