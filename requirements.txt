@@ -10,4 +10,8 @@ numpy
 scipy
 soundfile
 matplotlib
-silero-vad>=5.1          # load_silero_vad() y audio_forward(); instala torch y torchaudio
+pandas
+librosa
+requests
+python-dotenv
+pyannote-audio

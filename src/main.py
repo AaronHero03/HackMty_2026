@@ -8,8 +8,7 @@ import src.fase3.conversacional as f3
 import src.tools.vad as vad
 
 def main():
-    # Ajusta esta ruta si es necesario
-    ruta_base = Path("~/Workspace/HackMty2026/Tigres_Del_Sur/Altur_Data").expanduser()
+    ruta_base = Path(__file__).resolve().parents[1] / "Altur_Data"
     
     # 1. Fase 1 arranca leyendo el mapa
     manifest = f1.leer_manifiesto(ruta_base)

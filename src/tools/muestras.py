@@ -1,6 +1,7 @@
 import soundfile as sf
 import librosa
 import numpy as np
+from pathlib import Path
 
 def simular_llamada_telefonica(ruta_cliente, ruta_agente, archivo_salida, latencia_segundos=0.8):
     """
@@ -34,5 +35,12 @@ def simular_llamada_telefonica(ruta_cliente, ruta_agente, archivo_salida, latenc
     sf.write(archivo_salida, estereo, 8000, subtype='PCM_16')
     print("¡Llamada de prueba lista!")
 
+def toWav(ruta_archivo, archivo_salida):
+    data, _ = librosa.load(str(ruta_archivo), sr=8000, mono=False)
+    if data.ndim == 2:
+        data = data.T  # librosa devuelve (canales, muestras); soundfile espera (muestras, canales)
+    sf.write(archivo_salida, data, 8000, subtype='PCM_16')
+    print("¡Llamada de prueba lista!")
+
 # Uso:
-simular_llamada_telefonica("tests/ElevenLabs2.mp3", "tests/ElevenLabs1.mp3", "tests/demo_hackathon.wav")
+#simular_llamada_telefonica("tests/ElevenLabs2.mp3", "tests/ElevenLabs1.mp3", "tests/demo_hackathon.wav")

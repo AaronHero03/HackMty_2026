@@ -312,13 +312,8 @@ def graficar(psd, es_ia, ruta):
 
 
 def main():
-    # --- CONFIGURACIÓN SIMPLE ---
-    # Ajusta esta ruta a donde tengas tus datos
-    DATOS_DIR = Path("/home/aaronhero/Workspace/HackMty2026/Tigres_Del_Sur/Altur_Data" ) 
-    
-    # Cambia a True si quieres forzar que se vuelva a medir todo ignorando el caché
-    REHACER = False 
-    # ----------------------------
+    DATOS_DIR = Path(__file__).resolve().parents[2] / "Altur_Data"
+    REHACER = False
 
     if not DATOS_DIR.exists():
         print(f"Error: No se encontró la carpeta '{DATOS_DIR}'.")

@@ -14,9 +14,7 @@ load_dotenv()
 # Lee la API Key desde las variables de entorno
 API_KEY = os.getenv("ELEVENLABS_API_KEY")
 
-# Define la ruta absoluta de la carpeta en el mismo directorio que este script
-DIRECTORIO_SCRIPT = Path(__file__).resolve().parent
-CARPETA_SALIDA = DIRECTORIO_SCRIPT / "ElevenLabs"
+CARPETA_SALIDA = Path(__file__).resolve().parents[2] / "tests" / "ElevenLabs"
 
 # Lista con los IDs de las conversaciones que deseas descargar y procesar
 CONVERSATION_IDS = [

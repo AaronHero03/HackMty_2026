@@ -10,11 +10,9 @@ Contrato:
     metricas_acusticas = extraer_metricas_acusticas(voz_recortada, sr)
 """
 
-from pathlib import Path
-
 import numpy as np
 from scipy.fft import dct
-from scipy.signal import butter, hilbert, sosfilt, stft, welch
+from scipy.signal import hilbert, stft, welch
 import scipy.signal as signal
 
 SR = 8000
@@ -66,7 +64,7 @@ def _tramos_activos(y):
     ])
     umbral = np.percentile(energia, 95) - UMBRAL_TRAMAS_DB
     activos = energia >= umbral
-    trozos = [y[i * SALTO : i * SALTO + SALTO] for i in range(n_tramas) if activos[i]]
+    trozos = [y[i * SALTO : i * SALTO + VENTANA] for i in range(n_tramas) if activos[i]]
     return (np.concatenate(trozos).astype(np.float32) if trozos else np.array([], dtype=np.float32))
 
 # Features nuevos 

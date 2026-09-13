@@ -4,7 +4,7 @@ import glob
 import json
 from pathlib import Path
 
-def generar_turnos_vad(ruta_wav, umbral_db=30, duracion_minima=0.2):
+def generar_turnos_vad(ruta_wav, umbral_db=40, duracion_minima=0.2):
     """
     Lee un audio estéreo a 8kHz y genera el diccionario de turnos detectando la voz activa.
     """
@@ -84,9 +84,10 @@ def generar_turnos(directorio_muestras):
         datos_turnos = generar_turnos_vad(ruta_audio, umbral_db=40)
         turnos_limpios = fusionar_turnos(datos_turnos["turns"], max_pausa_s=1.2)
                 
-        # Asegúrate de que la carpeta exista o ajusta la ruta si es dinámica
-        ruta_json_salida = f"Altur_Data/turns/{nombre_base}.json"
-        
+        ruta_turns = Path(directorio_muestras).parent / "turns"
+        ruta_turns.mkdir(parents=True, exist_ok=True)
+        ruta_json_salida = ruta_turns / f"{nombre_base}.json"
+
         with open(ruta_json_salida, "w", encoding="utf-8") as archivo:
             # Envolvemos la lista en un diccionario con la llave "turns"
             json.dump({"turns": turnos_limpios}, archivo, indent=4, ensure_ascii=False)
