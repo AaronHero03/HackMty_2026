@@ -3,7 +3,8 @@ import os
 import base64
 import tempfile
 import pandas as pd
-import xgboost as xgb
+from catboost import CatBoostClassifier
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pymongo import MongoClient
@@ -13,6 +14,7 @@ from contextlib import asynccontextmanager
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT_DIR)
 
+# Tus importaciones ajustadas
 from src.fase1.audio_base import procesar_audio_base, recortar_voz_activa
 from src.fase2.acustica import aplicar_filtro_pasabanda, extraer_metricas_acusticas
 from src.fase3.conversacional import extraer_metricas_tiempo
@@ -29,10 +31,14 @@ ml_models = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("⏳ Cargando modelo XGBoost...")
-    modelo = xgb.XGBClassifier()
-    modelo.load_model(os.path.join(ROOT_DIR, "models", "modelo_xgboost_altur_v4.json"))
-    ml_models["xgboost"] = modelo
+    print("⏳ Cargando modelo CatBoost...")
+    modelo = CatBoostClassifier()
+    
+    # Asegúrate de guardar tu modelo en formato binario (.cbm) 
+    ruta_modelo = os.path.join(ROOT_DIR, "models", "modelo_catboost_altur.cbm")
+    modelo.load_model(ruta_modelo) 
+    
+    ml_models["catboost"] = modelo
     print("✅ Modelo cargado y listo.")
     yield
     ml_models.clear()
@@ -52,7 +58,7 @@ class DetectResponse(BaseModel):
 
 @app.post("/detect", response_model=DetectResponse)
 def detect_call(payload: DetectRequest):
-    modelo = ml_models.get("xgboost")
+    modelo = ml_models.get("catboost")
     
     # 1. Decodificar y guardar temporalmente
     audio_bytes = base64.b64decode(payload.audio_base64)
@@ -61,7 +67,7 @@ def detect_call(payload: DetectRequest):
         ruta_audio = tmp_file.name
 
     try:
-        # --- 2. PIPELINE EXACTO DE TU TEST.PY ---
+        # --- 2. PIPELINE DE PROCESAMIENTO ---
         datos_turnos = generar_turnos_vad(ruta_audio)
         turnos_limpios = fusionar_turnos(datos_turnos["turns"], max_pausa_s=0.5)
         
@@ -82,7 +88,8 @@ def detect_call(payload: DetectRequest):
         fila = {**metricas_ac, **metricas_tiempo}
         df_inferencia = pd.DataFrame([fila])
         
-        columnas_esperadas = modelo.feature_names_in_
+        # Atributo corregido para CatBoost
+        columnas_esperadas = modelo.feature_names_
         for col in columnas_esperadas:
             if col not in df_inferencia.columns:
                 df_inferencia[col] = float('nan')
@@ -92,7 +99,6 @@ def detect_call(payload: DetectRequest):
         prediccion = int(modelo.predict(df_final)[0])
         prob_ia = float(modelo.predict_proba(df_final)[0][1])
         
-        # Tu misma regla de umbral
         is_synthetic = bool(prob_ia >= 0.40)
         
         # --- 4. GUARDADO EN MONGODB ---
@@ -114,9 +120,13 @@ def detect_call(payload: DetectRequest):
         
     except Exception as e:
         print(f"⚠️ Error procesando {payload.call_id}: {e}")
-        # Si algo explota (ej. audio mudo), regresamos humano por defecto para no tumbar el script del juez
+        # Retorno de fallback para no tumbar el script del juez
         return DetectResponse(is_synthetic=False, confidence=0.0)
         
     finally:
         if os.path.exists(ruta_audio):
             os.remove(ruta_audio)
+
+
+if __name__ == "__main__":
+    uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=False)
