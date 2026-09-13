@@ -4,9 +4,9 @@ import glob
 from pathlib import Path
 
 # Importa tus módulos de procesamiento (ajusta las rutas según tu estructura)
-from src.fase1.main import procesar_audio_base, recortar_voz_activa
-from src.fase2.fase2_acustica import aplicar_filtro_pasabanda, extraer_metricas_acusticas
-from src.fase3.fase3_conversacional import extraer_metricas_tiempo
+from src.fase1.audio_base import procesar_audio_base, recortar_voz_activa
+from src.fase2.acustica import aplicar_filtro_pasabanda, extraer_metricas_acusticas
+from src.fase3.conversacional import extraer_metricas_tiempo
 from src.tools.vad import generar_turnos_vad, fusionar_turnos # Asegúrate de tener la función de fusión aquí
 
 def probar_audios_locales(directorio_muestras, ruta_modelo="modelo_xgboost_altur_v4.json"):
@@ -80,6 +80,7 @@ def probar_audios_locales(directorio_muestras, ruta_modelo="modelo_xgboost_altur
                 veredicto = "👤 Human"
             
             confianza = prob_ia * 100 if prediccion == 1 else (1 - prob_ia) * 100
+            
             
             print(f" Vector generado: {fila}")
             print(f"🎙️ {nombre_archivo}")

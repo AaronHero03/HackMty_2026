@@ -2,9 +2,9 @@ import pandas as pd
 from pathlib import Path
 
 # Importamos los contratos de cada miembro del equipo
-import src.fase1.main as f1
-import src.fase2.fase2_acustica as f2
-import src.fase3.fase3_conversacional as f3
+import src.fase1.audio_base as f1
+import src.fase2.acustica as f2
+import src.fase3.conversacional as f3
 import src.tools.vad as vad
 
 def main():
