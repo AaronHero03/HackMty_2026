@@ -1,1 +1,114 @@
-{"turns": [{"channel": 1, "start": 0.26, "end": 3.22}, {"channel": 1, "start": 3.66, "end": 7.58}, {"channel": 0, "start": 9.84, "end": 15.18}, {"channel": 1, "start": 16.5, "end": 18.32}, {"channel": 1, "start": 18.64, "end": 23.36}, {"channel": 0, "start": 25.22, "end": 26.84}, {"channel": 0, "start": 27.14, "end": 29.04}, {"channel": 1, "start": 31.12, "end": 32.08}, {"channel": 1, "start": 32.48, "end": 37.64}, {"channel": 0, "start": 41.68, "end": 44.38}, {"channel": 1, "start": 45.72, "end": 52.08}, {"channel": 1, "start": 52.56, "end": 54.16}, {"channel": 1, "start": 54.64, "end": 55.06}, {"channel": 0, "start": 57.22, "end": 58.72}, {"channel": 1, "start": 60.14, "end": 63.84}, {"channel": 1, "start": 64.26, "end": 64.56}, {"channel": 1, "start": 65.18, "end": 65.88}, {"channel": 1, "start": 66.3, "end": 66.58}, {"channel": 1, "start": 66.9, "end": 69.28}, {"channel": 0, "start": 68.3, "end": 68.98}, {"channel": 1, "start": 70.74, "end": 72.54}, {"channel": 0, "start": 71.16, "end": 73.28}, {"channel": 0, "start": 74.52, "end": 77.94}, {"channel": 1, "start": 79.48, "end": 83.12}, {"channel": 1, "start": 83.44, "end": 88.8}, {"channel": 0, "start": 92.4, "end": 94.52}, {"channel": 1, "start": 95.86, "end": 97.72}, {"channel": 1, "start": 98.04, "end": 101.04}, {"channel": 0, "start": 103.56, "end": 105.64}, {"channel": 1, "start": 107.4, "end": 110.12}, {"channel": 1, "start": 113.32, "end": 119.52}, {"channel": 0, "start": 121.66, "end": 124.46}, {"channel": 1, "start": 125.92, "end": 128.92}, {"channel": 1, "start": 129.32, "end": 131.88}, {"channel": 1, "start": 132.22, "end": 145.0}, {"channel": 1, "start": 145.4, "end": 147.06}, {"channel": 0, "start": 149.56, "end": 151.94}]}
+{
+    "turns": [
+        {
+            "start": 0.192,
+            "end": 7.744,
+            "channel": 1
+        },
+        {
+            "start": 9.728,
+            "end": 15.232,
+            "channel": 0
+        },
+        {
+            "start": 16.448,
+            "end": 23.552,
+            "channel": 1
+        },
+        {
+            "start": 25.152,
+            "end": 29.12,
+            "channel": 0
+        },
+        {
+            "start": 28.096,
+            "end": 28.48,
+            "channel": 1
+        },
+        {
+            "start": 31.04,
+            "end": 37.824,
+            "channel": 1
+        },
+        {
+            "start": 41.6,
+            "end": 44.544,
+            "channel": 0
+        },
+        {
+            "start": 45.632,
+            "end": 55.168,
+            "channel": 1
+        },
+        {
+            "start": 57.152,
+            "end": 58.752,
+            "channel": 0
+        },
+        {
+            "start": 60.032,
+            "end": 69.44,
+            "channel": 1
+        },
+        {
+            "start": 68.288,
+            "end": 68.992,
+            "channel": 0
+        },
+        {
+            "start": 70.656,
+            "end": 72.704,
+            "channel": 1
+        },
+        {
+            "start": 71.104,
+            "end": 78.016,
+            "channel": 0
+        },
+        {
+            "start": 79.36,
+            "end": 88.96,
+            "channel": 1
+        },
+        {
+            "start": 92.352,
+            "end": 94.592,
+            "channel": 0
+        },
+        {
+            "start": 95.808,
+            "end": 101.184,
+            "channel": 1
+        },
+        {
+            "start": 103.488,
+            "end": 105.792,
+            "channel": 0
+        },
+        {
+            "start": 107.328,
+            "end": 110.272,
+            "channel": 1
+        },
+        {
+            "start": 113.216,
+            "end": 119.68,
+            "channel": 1
+        },
+        {
+            "start": 121.6,
+            "end": 124.608,
+            "channel": 0
+        },
+        {
+            "start": 125.824,
+            "end": 147.2,
+            "channel": 1
+        },
+        {
+            "start": 149.504,
+            "end": 152.0,
+            "channel": 0
+        }
+    ]
+}

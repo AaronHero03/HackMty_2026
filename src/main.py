@@ -5,6 +5,7 @@ from pathlib import Path
 import src.fase1.main as f1
 import src.fase2.fase2_acustica as f2
 import src.fase3.fase3_conversacional as f3
+import src.tools.vad as vad
 
 def main():
     # Ajusta esta ruta si es necesario
@@ -13,6 +14,8 @@ def main():
     # 1. Fase 1 arranca leyendo el mapa
     manifest = f1.leer_manifiesto(ruta_base)
     datos_procesados = []
+    
+    vad.generar_turnos(str(ruta_base / "audio"))
     
     print("Iniciando orquestación del dataset...")
     

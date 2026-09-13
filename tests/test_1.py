@@ -9,7 +9,7 @@ from src.fase2.fase2_acustica import aplicar_filtro_pasabanda, extraer_metricas_
 from src.fase3.fase3_conversacional import extraer_metricas_tiempo
 from src.tools.vad import generar_turnos_vad, fusionar_turnos # Asegúrate de tener la función de fusión aquí
 
-def probar_audios_locales(directorio_muestras, ruta_modelo="modelo_xgboost_altur.json"):
+def probar_audios_locales(directorio_muestras, ruta_modelo="modelo_xgboost_altur_v4.json"):
     # 1. Cargar el modelo XGBoost
     print(f"Cargando modelo desde {ruta_modelo}...")
     modelo = xgb.XGBClassifier()
@@ -72,7 +72,13 @@ def probar_audios_locales(directorio_muestras, ruta_modelo="modelo_xgboost_altur
             prob_ia = float(modelo.predict_proba(df_final)[0][1])
             
             # Mostrar resultados
-            veredicto = "🤖 SINTÉTICO (IA)" if prediccion == 1 else "👤 HUMANO"
+            #veredicto = "🤖 SINTÉTICO (IA)" if prediccion == 1 else "👤 HUMANO"
+            
+            if prob_ia >= 0.40:  # Umbral más defensivo
+                veredicto = "🤖 Synthetic"
+            else:
+                veredicto = "👤 Human"
+            
             confianza = prob_ia * 100 if prediccion == 1 else (1 - prob_ia) * 100
             
             print(f" Vector generado: {fila}")

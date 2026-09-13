@@ -1,5 +1,8 @@
 import librosa
 import numpy as np
+import glob
+import json
+from pathlib import Path
 
 def generar_turnos_vad(ruta_wav, umbral_db=30, duracion_minima=0.2):
     """
@@ -63,3 +66,27 @@ def fusionar_turnos(turnos, max_pausa_s=0.5):
             
     return turnos_limpios
 
+
+def generar_turnos(directorio_muestras):
+    archivos_wav = glob.glob(f"{directorio_muestras}/*.wav")
+    
+    if not archivos_wav:
+        print(f"No se encontraron archivos .wav en {directorio_muestras}.")
+        return
+
+    print(f"\nProcesando {len(archivos_wav)} muestras con VAD...\n" + "-"*40)
+
+    for ruta_audio in archivos_wav:
+        # .stem saca solo el nombre sin la extensión (ej. "call_01bf49059daf")
+        nombre_base = Path(ruta_audio).stem
+        
+        # --- PIPELINE DE PROCESAMIENTO ---
+        datos_turnos = generar_turnos_vad(ruta_audio, umbral_db=40)
+        turnos_limpios = fusionar_turnos(datos_turnos["turns"], max_pausa_s=1.2)
+                
+        # Asegúrate de que la carpeta exista o ajusta la ruta si es dinámica
+        ruta_json_salida = f"Altur_Data/turns/{nombre_base}.json"
+        
+        with open(ruta_json_salida, "w", encoding="utf-8") as archivo:
+            # Envolvemos la lista en un diccionario con la llave "turns"
+            json.dump({"turns": turnos_limpios}, archivo, indent=4, ensure_ascii=False)
