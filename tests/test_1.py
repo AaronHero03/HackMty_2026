@@ -38,6 +38,37 @@ def cargar_manifest_ground_truth(ruta_manifest: Path) -> dict:
 
     df = pd.read_csv(ruta_manifest)
     ground_truth = {}
+import xgboost as xgb
+import pandas as pd
+import glob
+import os
+import sys
+from pathlib import Path
+from pymongo import MongoClient
+from datetime import datetime, timezone
+
+# Agrega la carpeta raíz (HackMty_2026) al PATH de Python
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Importa tus módulos de procesamiento (ajusta las rutas según tu estructura)
+from src.fase1.main import procesar_audio_base, recortar_voz_activa
+from src.fase2.fase2_acustica import aplicar_filtro_pasabanda, extraer_metricas_acusticas
+from src.fase3.fase3_conversacional import extraer_metricas_tiempo
+from src.tools.vad import generar_turnos_vad, fusionar_turnos # Asegúrate de tener la función de fusión aquí
+
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://adminAltur:adminaltur67@clusteraltur.6yjrmxp.mongodb.net/?appName=ClusterAltur")
+cliente_mongo = MongoClient(MONGO_URI) 
+db = cliente_mongo["proyectoAltur"]
+coleccion = db["historial_predicciones"]
+
+def probar_audios_locales(directorio_muestras, ruta_modelo="modelo_xgboost_altur_v4.json"):
+    # 1. Cargar el modelo XGBoost
+    print(f"Cargando modelo desde {ruta_modelo}...")
+    modelo = xgb.XGBClassifier()
+    modelo.load_model(ruta_modelo)
+    
+    # 2. Buscar todos los archivos WAV en la carpeta de muestras
+    archivos_wav = glob.glob(f"{directorio_muestras}/*.wav")
     
     for _, row in df.iterrows():
         anon_id = str(row["anon_id"]).strip()
@@ -135,6 +166,8 @@ def probar_audios_locales(
             .replace("_ruido", "")
         )
 
+        nombre_archivo = Path(ruta_audio).name
+        nombre_sin_extension = nombre_archivo.replace('.wav', '')
         try:
             # 1. Pipeline de extracción
             datos_turnos = generar_turnos_vad(str(ruta_audio))
@@ -173,6 +206,30 @@ def probar_audios_locales(
             else:
                 print("   Real (GT)  : ⚠️ NO REGISTRADO EN MANIFEST\n")
 
+                veredicto = "👤 Human"
+            
+            confianza = prob_ia * 100 if prediccion == 1 else (1 - prob_ia) * 100
+
+            documento = { #objeto de mongodb
+                "id": nombre_sin_extension,
+                "resultado": prediccion,
+                "confianza": prob_ia, 
+                "fecha_analisis": datetime.now(timezone.utc)
+            }
+            
+            try: #publicacion a la db
+                coleccion.insert_one(documento)
+                estado_db = "💾 Guardado en Atlas"
+                print(f"✅ Guardado en DB: {nombre_archivo}")
+            except Exception as e:
+                estado_db = f"⚠️ Error DB: {e}"
+            
+            print(f" Vector generado: {fila}")
+            print(f"🎙️ {nombre_archivo}")
+            print(f"   Veredicto: {veredicto}")
+            print(f"   Confianza: {confianza:.2f}%")
+            print(f"   -> Latencia detectada: {fila.get('latencia_mediana', 0):.2f}s | Vocoder Peak: {fila.get('vocoder_periodicity_peak', 0):.2f}\n")
+            
         except Exception as e:
             print(f"⚠️ Error procesando {ruta_audio.name}: {e}\n")
 

@@ -1,4 +1,6 @@
 import json
+import os
+import pandas as pd
 from pathlib import Path
 import pandas as pd
 
@@ -16,6 +18,9 @@ def main():
     # Carpeta dedicada para guardar los nuevos JSONs de VAD (sin tocar 'turns/')
     carpeta_turns_vad = ruta_base / "turns_vad"
     carpeta_turns_vad.mkdir(parents=True, exist_ok=True)
+    # Ajusta esta ruta si es necesario
+    root = Path(__file__).resolve().parent.parent
+    ruta_base = root / "Altur_Data"    
 
     # 1. Fase 1 arranca leyendo el mapa
     manifest = f1.leer_manifiesto(ruta_base)
@@ -81,5 +86,7 @@ def main():
     print(f"\n¡Matriz ensamblada con VAD dinámico lista en {ruta_salida}!")
 
 
+    print(f"\n¡Matriz ensamblada y lista en {ruta_salida}!")
+    
 if __name__ == "__main__":
     main()
