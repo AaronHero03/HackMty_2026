@@ -7,3 +7,5 @@
 !/modelo_xgboost_altur_v4.json
 !/src/
 /src/**/resultados/
+# historial/ se despliega aparte, como su propio servicio: railway up historial --path-as-root
+!/historial/

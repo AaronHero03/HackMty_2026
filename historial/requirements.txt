@@ -1,0 +1,4 @@
+# Dependencias SOLO del servicio del historial (las instala su Dockerfile en Railway)
+fastapi
+uvicorn
+pymongo

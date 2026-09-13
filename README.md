@@ -82,3 +82,16 @@ railway up
 ```
 
 El `Dockerfile` instala `requirements-api.txt` (solo lo que usa el servidor, sin torch) y copia únicamente la API, el modelo y los módulos que usa. `.railwayignore` evita subir audios y datos de Altur.
+
+## Historial del equipo (`GET /historial`)
+
+`historial/` es un **servicio aparte** de la API del juez. Lee de MongoDB lo que guarda `/detect` para que la página muestre las llamadas de todo el equipo. Solo lee: no guarda ni borra nada. Si falla, `/detect` sigue funcionando.
+
+- `GET /historial?limite=200` devuelve `{"total", "llamadas": [{"call_id", "is_synthetic", "confidence", "latencia_mediana_s", "fecha"}]}`, de la más reciente a la más vieja. `confidence` significa lo mismo que en `/detect`.
+- Variables de entorno: `MONGO_URI` (la misma de la API) y `CORS_ORIGINS` (por defecto GitHub Pages y `http://localhost:8000`).
+
+Se despliega en su propio servicio de Railway, desde la raíz del repo:
+
+```bash
+railway up historial --path-as-root --service voiceguard-historial
+```
