@@ -15,5 +15,8 @@ pymongo>=4.3.3              # Para guardar resultados en MongoDB
 xgboost>=1.7.6             # Para el modelo de predicción
 pandas>=2.0.3              # Para manejar datos tabulares
 librosa>=0.10.1            # Para extraer características de audio
-sys
 
+# Dependencias para la API de evaluación
+fastapi
+uvicorn
+pydantic
