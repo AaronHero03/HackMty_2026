@@ -1,0 +1,274 @@
+{
+  "turns": [
+    {
+      "start": 0.256,
+      "end": 3.2,
+      "channel": 1
+    },
+    {
+      "start": 0.576,
+      "end": 0.896,
+      "channel": 0
+    },
+    {
+      "start": 1.024,
+      "end": 1.28,
+      "channel": 0
+    },
+    {
+      "start": 2.56,
+      "end": 2.816,
+      "channel": 0
+    },
+    {
+      "start": 3.328,
+      "end": 6.08,
+      "channel": 1
+    },
+    {
+      "start": 6.144,
+      "end": 7.296,
+      "channel": 1
+    },
+    {
+      "start": 8.768,
+      "end": 16.576,
+      "channel": 0
+    },
+    {
+      "start": 17.984,
+      "end": 28.48,
+      "channel": 1
+    },
+    {
+      "start": 29.824,
+      "end": 31.168,
+      "channel": 0
+    },
+    {
+      "start": 31.296,
+      "end": 33.216,
+      "channel": 0
+    },
+    {
+      "start": 35.2,
+      "end": 35.84,
+      "channel": 1
+    },
+    {
+      "start": 36.16,
+      "end": 41.088,
+      "channel": 1
+    },
+    {
+      "start": 36.928,
+      "end": 37.376,
+      "channel": 0
+    },
+    {
+      "start": 41.152,
+      "end": 43.328,
+      "channel": 1
+    },
+    {
+      "start": 44.224,
+      "end": 46.208,
+      "channel": 0
+    },
+    {
+      "start": 46.72,
+      "end": 48.32,
+      "channel": 0
+    },
+    {
+      "start": 49.792,
+      "end": 52.416,
+      "channel": 1
+    },
+    {
+      "start": 51.264,
+      "end": 51.648,
+      "channel": 0
+    },
+    {
+      "start": 52.608,
+      "end": 54.144,
+      "channel": 1
+    },
+    {
+      "start": 54.464,
+      "end": 55.936,
+      "channel": 1
+    },
+    {
+      "start": 56.0,
+      "end": 61.696,
+      "channel": 1
+    },
+    {
+      "start": 61.76,
+      "end": 62.72,
+      "channel": 1
+    },
+    {
+      "start": 64.32,
+      "end": 67.904,
+      "channel": 0
+    },
+    {
+      "start": 67.968,
+      "end": 70.784,
+      "channel": 0
+    },
+    {
+      "start": 71.104,
+      "end": 74.688,
+      "channel": 0
+    },
+    {
+      "start": 76.032,
+      "end": 77.12,
+      "channel": 1
+    },
+    {
+      "start": 77.184,
+      "end": 81.6,
+      "channel": 1
+    },
+    {
+      "start": 80.96,
+      "end": 81.344,
+      "channel": 0
+    },
+    {
+      "start": 81.664,
+      "end": 81.92,
+      "channel": 0
+    },
+    {
+      "start": 82.816,
+      "end": 83.136,
+      "channel": 0
+    },
+    {
+      "start": 84.096,
+      "end": 86.976,
+      "channel": 0
+    },
+    {
+      "start": 87.36,
+      "end": 89.728,
+      "channel": 0
+    },
+    {
+      "start": 91.264,
+      "end": 94.656,
+      "channel": 1
+    },
+    {
+      "start": 97.088,
+      "end": 98.368,
+      "channel": 0
+    },
+    {
+      "start": 99.52,
+      "end": 100.096,
+      "channel": 1
+    },
+    {
+      "start": 103.04,
+      "end": 110.4,
+      "channel": 1
+    },
+    {
+      "start": 103.744,
+      "end": 104.0,
+      "channel": 0
+    },
+    {
+      "start": 111.616,
+      "end": 113.344,
+      "channel": 0
+    },
+    {
+      "start": 113.92,
+      "end": 115.456,
+      "channel": 0
+    },
+    {
+      "start": 116.736,
+      "end": 117.952,
+      "channel": 1
+    },
+    {
+      "start": 118.08,
+      "end": 126.144,
+      "channel": 1
+    },
+    {
+      "start": 126.272,
+      "end": 128.896,
+      "channel": 1
+    },
+    {
+      "start": 129.152,
+      "end": 137.856,
+      "channel": 1
+    },
+    {
+      "start": 137.984,
+      "end": 140.736,
+      "channel": 1
+    },
+    {
+      "start": 140.864,
+      "end": 141.696,
+      "channel": 1
+    },
+    {
+      "start": 141.888,
+      "end": 143.744,
+      "channel": 1
+    },
+    {
+      "start": 144.384,
+      "end": 145.92,
+      "channel": 0
+    },
+    {
+      "start": 146.816,
+      "end": 150.592,
+      "channel": 1
+    },
+    {
+      "start": 150.656,
+      "end": 151.104,
+      "channel": 1
+    },
+    {
+      "start": 151.296,
+      "end": 152.896,
+      "channel": 1
+    },
+    {
+      "start": 153.6,
+      "end": 154.496,
+      "channel": 0
+    },
+    {
+      "start": 156.096,
+      "end": 157.376,
+      "channel": 1
+    },
+    {
+      "start": 157.44,
+      "end": 161.472,
+      "channel": 1
+    },
+    {
+      "start": 161.536,
+      "end": 164.032,
+      "channel": 1
+    }
+  ]
+}

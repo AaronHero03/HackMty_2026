@@ -10,6 +10,11 @@ numpy
 scipy
 soundfile
 matplotlib
+pandas
+librosa
+requests
+python-dotenv
+pyannote-audio
 silero-vad>=5.1          # load_silero_vad() y audio_forward(); instala torch y torchaudio
 pymongo>=4.3.3              # Para guardar resultados en MongoDB
 xgboost>=1.7.6             # Para el modelo de predicción
