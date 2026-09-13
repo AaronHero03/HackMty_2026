@@ -21,7 +21,7 @@ cliente_mongo = MongoClient(MONGO_URI)
 db = cliente_mongo["proyectoAltur"]
 coleccion = db["historial_predicciones"]
 
-def probar_audios_locales(directorio_muestras, ruta_modelo="modelo_xgboost_altur_v4.json"):
+def probar_audios_locales(directorio_muestras, ruta_modelo="modelo_xgboost_altur_v3.json"):
     # 1. Cargar el modelo XGBoost
     print(f"Cargando modelo desde {ruta_modelo}...")
     modelo = xgb.XGBClassifier()
