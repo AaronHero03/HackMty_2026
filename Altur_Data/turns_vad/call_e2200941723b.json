@@ -1,0 +1,79 @@
+{
+  "turns": [
+    {
+      "start": 0.256,
+      "end": 7.872,
+      "channel": 1
+    },
+    {
+      "start": 2.048,
+      "end": 2.88,
+      "channel": 0
+    },
+    {
+      "start": 3.456,
+      "end": 31.808,
+      "channel": 0
+    },
+    {
+      "start": 31.936,
+      "end": 41.984,
+      "channel": 1
+    },
+    {
+      "start": 32.128,
+      "end": 32.896,
+      "channel": 0
+    },
+    {
+      "start": 33.408,
+      "end": 58.816,
+      "channel": 0
+    },
+    {
+      "start": 56.832,
+      "end": 58.048,
+      "channel": 1
+    },
+    {
+      "start": 58.112,
+      "end": 59.328,
+      "channel": 1
+    },
+    {
+      "start": 58.944,
+      "end": 61.824,
+      "channel": 0
+    },
+    {
+      "start": 59.392,
+      "end": 66.24,
+      "channel": 1
+    },
+    {
+      "start": 62.08,
+      "end": 62.912,
+      "channel": 0
+    },
+    {
+      "start": 63.36,
+      "end": 88.832,
+      "channel": 0
+    },
+    {
+      "start": 88.96,
+      "end": 91.776,
+      "channel": 0
+    },
+    {
+      "start": 91.904,
+      "end": 92.928,
+      "channel": 0
+    },
+    {
+      "start": 93.44,
+      "end": 108.38,
+      "channel": 0
+    }
+  ]
+}

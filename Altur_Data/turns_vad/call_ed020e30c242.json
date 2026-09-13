@@ -1,0 +1,39 @@
+{
+  "turns": [
+    {
+      "start": 0.192,
+      "end": 2.56,
+      "channel": 1
+    },
+    {
+      "start": 1.728,
+      "end": 79.36,
+      "channel": 0
+    },
+    {
+      "start": 2.688,
+      "end": 3.776,
+      "channel": 1
+    },
+    {
+      "start": 3.968,
+      "end": 7.104,
+      "channel": 1
+    },
+    {
+      "start": 7.232,
+      "end": 8.384,
+      "channel": 1
+    },
+    {
+      "start": 22.848,
+      "end": 27.648,
+      "channel": 1
+    },
+    {
+      "start": 27.712,
+      "end": 31.296,
+      "channel": 1
+    }
+  ]
+}

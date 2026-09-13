@@ -1,0 +1,129 @@
+{
+  "turns": [
+    {
+      "start": 0.256,
+      "end": 7.872,
+      "channel": 1
+    },
+    {
+      "start": 4.672,
+      "end": 5.504,
+      "channel": 0
+    },
+    {
+      "start": 5.824,
+      "end": 34.432,
+      "channel": 0
+    },
+    {
+      "start": 16.128,
+      "end": 20.928,
+      "channel": 1
+    },
+    {
+      "start": 21.376,
+      "end": 23.744,
+      "channel": 1
+    },
+    {
+      "start": 34.688,
+      "end": 35.52,
+      "channel": 0
+    },
+    {
+      "start": 35.84,
+      "end": 64.448,
+      "channel": 0
+    },
+    {
+      "start": 51.84,
+      "end": 58.752,
+      "channel": 1
+    },
+    {
+      "start": 62.784,
+      "end": 64.064,
+      "channel": 1
+    },
+    {
+      "start": 64.128,
+      "end": 70.72,
+      "channel": 1
+    },
+    {
+      "start": 64.704,
+      "end": 65.536,
+      "channel": 0
+    },
+    {
+      "start": 65.856,
+      "end": 94.4,
+      "channel": 0
+    },
+    {
+      "start": 81.024,
+      "end": 84.992,
+      "channel": 1
+    },
+    {
+      "start": 85.312,
+      "end": 86.784,
+      "channel": 1
+    },
+    {
+      "start": 86.976,
+      "end": 89.92,
+      "channel": 1
+    },
+    {
+      "start": 94.72,
+      "end": 95.552,
+      "channel": 0
+    },
+    {
+      "start": 95.552,
+      "end": 96.128,
+      "channel": 1
+    },
+    {
+      "start": 95.872,
+      "end": 124.416,
+      "channel": 0
+    },
+    {
+      "start": 99.008,
+      "end": 101.952,
+      "channel": 1
+    },
+    {
+      "start": 124.672,
+      "end": 141.52,
+      "channel": 0
+    },
+    {
+      "start": 125.824,
+      "end": 126.528,
+      "channel": 1
+    },
+    {
+      "start": 130.304,
+      "end": 130.624,
+      "channel": 1
+    },
+    {
+      "start": 130.816,
+      "end": 133.76,
+      "channel": 1
+    },
+    {
+      "start": 133.824,
+      "end": 135.616,
+      "channel": 1
+    },
+    {
+      "start": 135.68,
+      "end": 137.472,
+      "channel": 1
+    }
+  ]
+}
