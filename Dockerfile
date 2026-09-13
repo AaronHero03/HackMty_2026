@@ -10,11 +10,12 @@ WORKDIR /app
 COPY requirements-api.txt .
 RUN pip install -r requirements-api.txt
 
-COPY api.py modelo_xgboost_altur_v4.json ./
+COPY api.py ./
+COPY models/modelo_catboost_altur.cbm models/
 COPY src/__init__.py src/
-COPY src/fase1/main.py src/fase1/
-COPY src/fase2/fase2_acustica.py src/fase2/
-COPY src/fase3/fase3_conversacional.py src/fase3/
+COPY src/fase1/audio_base.py src/fase1/
+COPY src/fase2/acustica.py src/fase2/
+COPY src/fase3/conversacional.py src/fase3/
 COPY src/tools/vad.py src/tools/
 
 # Railway indica en PORT el puerto donde debe escuchar el servidor

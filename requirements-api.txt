@@ -1,13 +1,13 @@
 # Dependencias SOLO del servidor de la API (las instala el Dockerfile en Railway).
 # Para trabajar en Colab, Windows, Ubuntu o Arch se sigue usando requirements.txt.
-# No incluye torch, silero-vad ni matplotlib: la API no los usa y harían la imagen mucho más pesada.
+# No incluye torch, silero-vad ni matplotlib directo: la API no los usa y harían la imagen mucho más pesada.
 
 numpy
 scipy
 soundfile
 librosa
 pandas
-xgboost-cpu              # la misma xgboost, sin soporte de GPU: pesa mucho menos y el servidor no tiene GPU
+catboost                 # modelo de la API: models/modelo_catboost_altur.cbm
 pymongo
 fastapi
 uvicorn

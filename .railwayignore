@@ -4,7 +4,7 @@
 !/Dockerfile
 !/api.py
 !/requirements-api.txt
-!/modelo_xgboost_altur_v4.json
+!/models/
 !/src/
 /src/**/resultados/
 # historial/ se despliega aparte, como su propio servicio: railway up historial --path-as-root

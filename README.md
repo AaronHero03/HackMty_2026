@@ -56,7 +56,7 @@ We have to expose a /detect endpoint that return:
 
 ## API (`POST /detect`)
 
-`api.py` expone el endpoint que llama el juez de Altur, con el mismo proceso de `tests/test_1.py` y el modelo `modelo_xgboost_altur_v4.json`.
+`api.py` expone el endpoint que llama el juez de Altur. Usa el proceso de audio de `main` (detector de voz por energía con umbral 40, rasgos acústicos y de latencia; el mismo de `src/main.py`) y el modelo CatBoost `models/modelo_catboost_altur.cbm`, entrenado con esos rasgos.
 
 **Contrato:** recibe `{"call_id", "audio_base64", "sample_rate": 8000, "channels": 2}` y responde `{"is_synthetic": bool, "confidence": 0-1}`. `confidence` es la seguridad en la respuesta dada: el juez calcula la probabilidad de IA como `confidence` si `is_synthetic` es true, y como `1 - confidence` si es false.
 
@@ -65,7 +65,7 @@ We have to expose a /detect endpoint that return:
 | Variable | Para qué | Si no está |
 |---|---|---|
 | `MONGO_URI` | Guardar cada resultado en MongoDB Atlas, después de responder | No guarda historial; la API responde igual |
-| `UMBRAL` | Probabilidad de IA a partir de la cual responde sintético | 0.40 |
+| `UMBRAL` | Probabilidad de IA a partir de la cual responde sintético | 0.50 |
 | `CORS_ORIGINS` | Páginas que pueden llamar a la API desde el navegador, separadas por comas | `https://fernandox89.github.io` |
 
 **Correrla en tu computadora** (Windows, Ubuntu o Arch), con lo de `requirements.txt` ya instalado:

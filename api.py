@@ -4,7 +4,7 @@ import base64
 import tempfile
 from pathlib import Path
 import pandas as pd
-import xgboost as xgb
+from catboost import CatBoostClassifier
 from fastapi import BackgroundTasks, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -16,16 +16,17 @@ from contextlib import asynccontextmanager
 RAIZ = Path(__file__).resolve().parent
 sys.path.append(str(RAIZ))
 
-from src.fase1.main import procesar_audio_base, recortar_voz_activa
-from src.fase2.fase2_acustica import aplicar_filtro_pasabanda, extraer_metricas_acusticas
-from src.fase3.fase3_conversacional import extraer_metricas_tiempo
+# Mismo proceso de audio con el que se generó features_final_vad.csv y se entrenó el modelo (src/main.py de main)
+from src.fase1.audio_base import procesar_audio_base, recortar_voz_activa
+from src.fase2.acustica import aplicar_filtro_pasabanda, extraer_metricas_acusticas
+from src.fase3.conversacional import extraer_metricas_tiempo
 from src.tools.vad import generar_turnos_vad, fusionar_turnos
 
 # Modelo junto a este archivo, para no depender de la carpeta desde donde se arranca el servidor
-RUTA_MODELO = RAIZ / "modelo_xgboost_altur_v4.json"
+RUTA_MODELO = RAIZ / "models" / "modelo_catboost_altur.cbm"
 
-# Probabilidad de IA a partir de la cual se responde sintético
-UMBRAL = float(os.environ.get("UMBRAL", "0.40"))
+# Probabilidad de IA a partir de la cual se responde sintético (CatBoost se evaluó con 0.5)
+UMBRAL = float(os.environ.get("UMBRAL", "0.50"))
 
 # Páginas que pueden llamar a la API desde el navegador, separadas por comas
 ORIGENES_CORS = os.environ.get("CORS_ORIGINS", "https://fernandox89.github.io").split(",")
@@ -47,10 +48,10 @@ ml_models = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("⏳ Cargando modelo XGBoost...")
-    modelo = xgb.XGBClassifier()
+    print("⏳ Cargando modelo CatBoost...")
+    modelo = CatBoostClassifier()
     modelo.load_model(str(RUTA_MODELO))
-    ml_models["xgboost"] = modelo
+    ml_models["modelo"] = modelo
     print(f"✅ Modelo cargado y listo. Umbral: {UMBRAL}. MongoDB: {'sí' if coleccion is not None else 'no'}.")
     yield
     ml_models.clear()
@@ -78,11 +79,11 @@ def guardar_en_mongo(documento):
 
 @app.get("/health")
 def health():
-    return {"ok": "xgboost" in ml_models}
+    return {"ok": "modelo" in ml_models}
 
 @app.post("/detect", response_model=DetectResponse)
 def detect_call(payload: DetectRequest, tareas: BackgroundTasks):
-    modelo = ml_models.get("xgboost")
+    modelo = ml_models.get("modelo")
     ruta_audio = None
 
     try:
@@ -92,7 +93,7 @@ def detect_call(payload: DetectRequest, tareas: BackgroundTasks):
             tmp_file.write(audio_bytes)
             ruta_audio = tmp_file.name
 
-        # --- 2. PIPELINE EXACTO DE TU TEST.PY ---
+        # --- 2. PROCESO DE AUDIO (igual que src/main.py, con el que se entrenó el modelo) ---
         datos_turnos = generar_turnos_vad(ruta_audio)
         turnos_limpios = fusionar_turnos(datos_turnos["turns"], max_pausa_s=0.5)
 
@@ -102,7 +103,7 @@ def detect_call(payload: DetectRequest, tareas: BackgroundTasks):
         y_c0_norm, sr = procesar_audio_base(ruta_audio)
         voz_recortada = recortar_voz_activa(y_c0_norm, turnos_llamador, sr)
 
-        voz_filtrada = aplicar_filtro_pasabanda(voz_recortada, sr)
+        voz_filtrada = aplicar_filtro_pasabanda(voz_recortada)
         metricas_ac = extraer_metricas_acusticas(voz_filtrada, sr)
         metricas_tiempo = extraer_metricas_tiempo(
             tramos_agente=turnos_agente,
@@ -110,19 +111,13 @@ def detect_call(payload: DetectRequest, tareas: BackgroundTasks):
         )
 
         # --- 3. INFERENCIA ---
+        # Mismas columnas y orden que al entrenar; si falta alguna, queda vacía (CatBoost acepta NaN)
         fila = {**metricas_ac, **metricas_tiempo}
-        df_inferencia = pd.DataFrame([fila])
-
-        columnas_esperadas = modelo.feature_names_in_
-        for col in columnas_esperadas:
-            if col not in df_inferencia.columns:
-                df_inferencia[col] = float('nan')
-
-        df_final = df_inferencia[columnas_esperadas]
+        df_final = pd.DataFrame([fila]).reindex(columns=modelo.feature_names_)
 
         prob_ia = float(modelo.predict_proba(df_final)[0][1])
 
-        # Tu misma regla de umbral
+        # Regla de umbral
         is_synthetic = prob_ia >= UMBRAL
 
         # El juez lee confidence como la seguridad en la respuesta dada:
