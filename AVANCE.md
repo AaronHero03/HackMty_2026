@@ -1,4 +1,4 @@
-# Avance del proyecto — VoiceGuard
+# Avance del proyecto — Yasu
 
 Tablero del equipo. Se lee en un minuto y dice **qué está hecho, quién lo hace y qué salió**.
 

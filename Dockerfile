@@ -1,4 +1,4 @@
-# API de VoiceGuard (POST /detect) para Railway.
+# API de Yasu (POST /detect) para Railway.
 # Solo copia lo que usa la API: nada de audios ni datos de Altur.
 FROM python:3.12-slim
 
